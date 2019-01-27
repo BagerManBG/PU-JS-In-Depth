@@ -1,4 +1,10 @@
+/**
+ * Setup.js - querying data.json and
+ * creating objects based on file contents.
+ */
 globals.functions.loadJSON(response => {
+  console.log('%c#######   Starting setup, reading data from data.json...   #######', 'color: green');
+
   const data = JSON.parse(response);
   globals.eventListCollection = new EventListCollection();
 

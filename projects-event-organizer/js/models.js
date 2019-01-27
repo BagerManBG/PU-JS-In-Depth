@@ -1,5 +1,5 @@
 /**
- * class EventListCollection
+ * class EventListCollection.
  */
 class EventListCollection {
   constructor() {
@@ -178,6 +178,9 @@ class EventListCollection {
   }
 }
 
+/**
+ * class EventList.
+ */
 class EventList {
   constructor() {
     this.id = globals.idCounter.eventList ? ++globals.idCounter.eventList : globals.idCounter.eventList = 1;
@@ -195,6 +198,9 @@ class EventList {
   }
 }
 
+/**
+ * class Event.
+ */
 class Event {
   constructor(eventName, eventDate = null, requireLawfulAge = false) {
     if (!globals.allowAdditions) {
@@ -254,6 +260,9 @@ class Event {
   }
 }
 
+/**
+ * class Customer.
+ */
 class Customer {
   constructor(fullName, sex, age) {
     if (!globals.allowAdditions) {
