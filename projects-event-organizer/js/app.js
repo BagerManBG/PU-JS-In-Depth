@@ -1,8 +1,16 @@
 /**
  * Task Tests.
+ * Nothing in this file offers any functionality,
+ * only tests of it.
  */
 window.onload = () => {
   const processes = [];
+
+  /**
+   *
+   * Part 1.
+   *
+   */
 
   /**
    * Test for #1.1 task.
@@ -19,13 +27,19 @@ window.onload = () => {
     globals.functions.coloredLog('#######   Test for 1.2   #######', 'green', '\n');
     for (const eventList of globals.eventListCollection.eventLists) {
 
-      console.log(`Events for list #${eventList.id}`);
-      for (const event of eventList.events) {
+      if (eventList) {
+        console.log(`Events for list #${eventList.id}`);
+        for (const event of eventList.events) {
 
-        console.log(`    Event (#${event.id}) ${event.name}: ${event.requireLawfulAge ? '18+' : 'All Ages'}`);
-        for (const customer of event.customers) {
+          if (event) {
+            console.log(`${' '.repeat(4)}Event (#${event.id}) ${event.name}: ${event.requireLawfulAge ? '18+' : 'All Ages'}`);
+            for (const customer of event.customers) {
 
-          console.log(`        Customer (#${customer.id}) Name: ${customer.fullName}, Age: ${customer.age}, Sex: ${customer.sexVerbose}`);
+              if (customer) {
+                console.log(`${' '.repeat(8)}Customer (#${customer.id}) Name: ${customer.fullName}, Age: ${customer.age}, Sex: ${customer.sexVerbose}`);
+              }
+            }
+          }
         }
       }
     }
@@ -81,9 +95,15 @@ window.onload = () => {
    */
   processes.push(() => {
     globals.functions.coloredLog('#######   Test for 1.8   #######', 'green', '\n');
-    globals.eventListCollection.deleteCustomer(1);
+    globals.eventListCollection.deleteCustomer(1, 1);
     console.log('Full Data: ', globals.eventListCollection);
   });
+
+  /**
+   *
+   * Part 2.
+   *
+   */
 
   /**
    * Test for #2.1 task.
@@ -140,9 +160,63 @@ window.onload = () => {
   });
 
   /**
+   *
+   * Part 3.
+   *
+   */
+
+  /**
+   * Test for #3.1 task (and #3.2).
+   */
+  processes.push(() => {
+    globals.functions.coloredLog('#######   Test for 3.1 (and #3.2)  #######', 'green', '\n');
+    globals.eventListCollection.addEvent(2, new Event('Dobi is free', '2019-06-31', false, 0));
+    globals.eventListCollection.addEvent(2, new Event('Dobi is freen\'t', '2019-06-31', false, 10));
+    console.log('Full Data: ', globals.eventListCollection);
+  });
+
+  /**
+   * Test for #3.3 task.
+   */
+  processes.push(() => {
+    globals.functions.coloredLog('#######   Test for 3.3   #######', 'green', '\n');
+    globals.eventListCollection.listEventsGroupByPrice();
+  });
+
+  /**
+   * Test for #3.4 task.
+   */
+  processes.push(() => {
+    globals.functions.coloredLog('#######   Test for 3.4   #######', 'green', '\n');
+    globals.eventListCollection.addCustomer(9, 4);
+    globals.eventListCollection.addCustomer(8, 1);
+    globals.eventListCollection.addCustomer(7, 1);
+    globals.eventListCollection.addCustomer(6, 1);
+    globals.eventListCollection.addCustomer(4, 1);
+    globals.eventListCollection.addCustomer(3, 1);
+    globals.eventListCollection.addCustomer(2, 5);
+    globals.eventListCollection.addCustomer(1, 5);
+    console.log('Full Data: ', globals.eventListCollection);
+    console.log(globals.customersList);
+  });
+
+  /**
+   * Test for #3.5 task.
+   */
+  processes.push(() => {
+    globals.functions.coloredLog('#######   Test for 3.5   #######', 'green', '\n');
+    globals.eventListCollection.addCustomer(1, 1); // this is customer #1's free event.
+    console.log('Full Data: ', globals.eventListCollection);
+    console.log(globals.customersList);
+  });
+
+  /**
    * Query though all registered processes and run them
    * using all at once mode or waiting for input mode,
    * depending on the value of the global waitForKeyInputOnTests var.
+   *
+   * Feature can be turned off by making the global var,
+   * mentioned above, to 'false'.
    */
   if (globals.waitForKeyInputOnTests) {
     const queryProcesses = () => {
@@ -168,6 +242,7 @@ window.onload = () => {
     document.addEventListener('keypress', queryProcesses());
   }
   else {
+    // Call them all one after another.
     for (const p of processes) p();
   }
 };

@@ -9,82 +9,87 @@ class EventListCollection {
   }
 
   findEventIndexDataById(id) {
-    for (const listIndex in this.eventLists) {
-      for (const eventIndex in this.eventLists[listIndex].events) {
-        if (this.eventLists[listIndex].events[eventIndex].id === id) {
-          return {
-            listIndex: listIndex,
-            eventIndex: eventIndex,
-          };
-        }
+    for (const list of this.eventLists) {
+      if (list && list.events[id]) {
+        return {
+          listIndex: list.id,
+        };
       }
     }
     console.error(`An event with the id #${id} was not found!`);
     return false;
   }
 
-  findCustomerIndexDataById(id) {
-    for (const listIndex in this.eventLists) {
-      for (const eventIndex in this.eventLists[listIndex].events) {
-        for (const customerIndex in this.eventLists[listIndex].events[eventIndex].customers) {
-          if (this.eventLists[listIndex].events[eventIndex].customers[customerIndex].id === id) {
-            return {
-              listIndex: listIndex,
-              eventIndex: eventIndex,
-              customerIndex: customerIndex,
-            };
-          }
+  findCustomerIndexDataById(customerId, eventId) {
+    for (const list of this.eventLists) {
+      if (list && list.events[eventId]) {
+        if (list.events[eventId].customers[customerId]) {
+          return {
+            listIndex: list.id,
+          };
         }
       }
     }
-    console.error(`A customer with the id #${id} was not found!`);
     return false;
   }
 
   addEvent(listId, event) {
-    for (const listIndex in this.eventLists) {
-      if (this.eventLists[listIndex].id === listId) {
-        this.eventLists[listIndex].addEvent(event);
-        return undefined;
-      }
+    if (this.eventLists[listId]) {
+      this.eventLists[listId].addEvent(event);
+    }
+    else {
+      console.error(`List with id #${listId} does not exist!`);
     }
   }
 
-  updateEvent(id, eventName, requireLawfulAge) {
+  updateEvent(id, eventName, eventDate = null, requireLawfulAge = null) {
     const indexData = this.findEventIndexDataById(id);
     if (indexData) {
-      this.eventLists[indexData.listIndex].events[indexData.eventIndex].updateEvent(eventName, requireLawfulAge);
+      this.eventLists[indexData.listIndex].events[id].updateEvent(eventName, eventDate, requireLawfulAge);
     }
   }
 
   deleteEvent(id) {
     const indexData = this.findEventIndexDataById(id);
     if (indexData) {
-      this.eventLists[indexData.listIndex].events.splice(indexData.eventIndex, 1);
+      delete this.eventLists[indexData.listIndex].events[id];
       console.log(`Removed Event #${id}!`);
+    }
+  }
+
+  static findCustomer(id) {
+    if (globals.customersList[id]) {
+      return globals.customersList[id];
+    }
+    else {
+      console.error(`Cannot find customer with id #${id}!`);
+      return null;
     }
   }
 
   addCustomer(eventId, customer) {
     const indexData = this.findEventIndexDataById(eventId);
     if (indexData) {
-      this.eventLists[indexData.listIndex].events[indexData.eventIndex].addCustomer(customer);
+      if (Number.isInteger(customer)) {
+        customer = EventListCollection.findCustomer(customer);
+      }
+      this.eventLists[indexData.listIndex].events[eventId].addCustomer(customer);
     }
   }
 
-  deleteCustomer(id) {
-    const indexData = this.findCustomerIndexDataById(id);
+  deleteCustomer(customerId, eventId) {
+    const indexData = this.findCustomerIndexDataById(customerId, eventId);
     if (indexData) {
-      this.eventLists[indexData.listIndex].events[indexData.eventIndex].customers.splice(indexData.customerIndex, 1);
-      console.log(`Removed Customer #${id}!`);
+      delete this.eventLists[indexData.listIndex].events[eventId].customers[customerId];
+      console.log(`Removed Customer #${customerId} from Event #${eventId}!`);
     }
   }
 
   listCustomers(eventId, sexFilter = null) {
     const indexData = this.findEventIndexDataById(eventId);
     if (indexData) {
+      let customers = this.eventLists[indexData.listIndex].events[eventId].customers;
 
-      let customers = this.eventLists[indexData.listIndex].events[indexData.eventIndex].customers;
       if (sexFilter !== null && (sexFilter === 0 || sexFilter === 1)) {
         customers = customers.filter(c => c.sex === sexFilter);
       }
@@ -98,15 +103,21 @@ class EventListCollection {
   findLargestEvent() {
     let largestEvents = [];
     for (const list of this.eventLists) {
-      for (const event of list.events) {
-        if (largestEvents.length === 0) {
-          largestEvents.push(event);
-        }
-        else if (event.customers.length === largestEvents[0].customers.length) {
-          largestEvents.push(event);
-        }
-        else if (event.customers.length > largestEvents[0].customers.length) {
-          largestEvents = [event];
+
+      if (list) {
+        for (const event of list.events) {
+
+          if (event) {
+            if (largestEvents.length === 0) {
+              largestEvents.push(event);
+            }
+            else if (event.customers.length === largestEvents[0].customers.length) {
+              largestEvents.push(event);
+            }
+            else if (event.customers.length > largestEvents[0].customers.length) {
+              largestEvents = [event];
+            }
+          }
         }
       }
     }
@@ -125,9 +136,13 @@ class EventListCollection {
   findNonRequiringLawfulAgeEvents() {
     const events = [];
     for (const list of this.eventLists) {
-      for (const event of list.events) {
-        if (!event.requireLawfulAge) {
-          events.push(event);
+
+      if (list) {
+        for (const event of list.events) {
+
+          if (event && !event.requireLawfulAge) {
+            events.push(event);
+          }
         }
       }
     }
@@ -136,16 +151,44 @@ class EventListCollection {
 
   listEventsGroupByRequireLawfulAge() {
     for (const list of this.eventLists) {
-      for (const event of list.events) {
-        let prefix = null;
 
-        if (event.requireLawfulAge) {
-          prefix = '*';
+      if (list) {
+        for (const event of list.events) {
+
+          if (event) {
+            let prefix = null;
+
+            if (event.requireLawfulAge) {
+              prefix = '*';
+            }
+            else {
+              prefix = '#';
+            }
+            console.log(`Event (#${event.id}) ${prefix} ${event.name}: ${event.requireLawfulAge ? '18+' : 'All Ages'}`);
+          }
         }
-        else {
-          prefix = '#';
+      }
+    }
+  }
+
+  listEventsGroupByPrice() {
+    for (const list of this.eventLists) {
+
+      if (list) {
+        for (const event of list.events) {
+
+          if (event) {
+            let prefix = null;
+
+            if (event.price > 0) {
+              prefix = '$';
+            }
+            else {
+              prefix = '!';
+            }
+            console.log(`Event (#${event.id}) ${prefix} ${event.name}: ${event.price > 0 ? event.price + ' ' + globals.currencyCode : 'Free'}`);
+          }
         }
-        console.log(`Event (#${event.id}) ${prefix} ${event.name}: ${event.requireLawfulAge ? '18+' : 'All Ages'}`);
       }
     }
   }
@@ -160,9 +203,13 @@ class EventListCollection {
     console.log(`Searching for "${value}" in "${criteria}"`);
 
     for (const list of this.eventLists) {
-      for (const event of list.events) {
-        if (event[criteria] === value) {
-          events.push(event);
+
+      if (list) {
+        for (const event of list.events) {
+
+          if (event && event[criteria] === value) {
+            events.push(event);
+          }
         }
       }
     }
@@ -193,7 +240,7 @@ class EventList {
       console.error('You can add only objects of type Event to this list!');
     }
     else if (!event.error) {
-      this.events.push(event);
+      this.events[event.id] = event;
     }
   }
 }
@@ -202,7 +249,7 @@ class EventList {
  * class Event.
  */
 class Event {
-  constructor(eventName, eventDate = null, requireLawfulAge = false) {
+  constructor(eventName, eventDate = null, requireLawfulAge = false, price = 0) {
     if (!globals.allowAdditions) {
       console.error('Additions are forbidden at the moment!');
       this.error = true;
@@ -221,6 +268,7 @@ class Event {
       this.date = eventDate;
       this.requireLawfulAge = Boolean(requireLawfulAge);
       this.customers = [];
+      this.price = isNaN(Number(price)) || Number(price) < 0 ? 0 : Number(price);
       console.log(`Event #${this.id} was created`);
     }
   }
@@ -233,8 +281,19 @@ class Event {
       if (this.requireLawfulAge && customer.age < globals.lawfulAge) {
         console.error('This person is too young to be added to this event!');
       }
+      else if (!customer.isVIP && customer.wallet - this.price < 0) {
+        console.error('This person doesn\'t have enough funds to join this event!');
+      }
       else if (!customer.error) {
-        this.customers.push(customer);
+
+        if (!customer.isVIP) {
+          customer.wallet -= this.price;
+        }
+
+        customer.isVIP = (++customer.eventsCount % 5 === 0);
+
+        this.customers[customer.id] = customer;
+        console.log(`Customer #${customer.id} added to event #${this.id}!`);
       }
     }
   }
@@ -264,7 +323,7 @@ class Event {
  * class Customer.
  */
 class Customer {
-  constructor(fullName, sex, age) {
+  constructor(fullName, sex, age, wallet = 0) {
     if (!globals.allowAdditions) {
       console.error('Additions are forbidden at the moment!');
       this.error = true;
@@ -273,12 +332,21 @@ class Customer {
       console.error('Name, sex and age are required attributes!');
       this.error = true;
     }
+    else if (isNaN(Number(age)) || Number(age) <= 0 || isNaN(Number(wallet)) || Number(wallet) < 0) {
+      console.error('Age and wallet must be proper numbers and \'> 0\'!');
+      this.error = true;
+    }
     else {
       this.id = globals.idCounter.customer ? ++globals.idCounter.customer : globals.idCounter.customer = 1;
       this.fullName = fullName;
       this.sex = sex;
       this.sexVerbose = Boolean(sex) ? 'Female' : 'Male';
-      this.age = age;
+      this.age = Number(age);
+      this.wallet = Number(wallet);
+      this.eventsCount = 0;
+      this.isVIP = false;
+
+      globals.customersList[this.id] = this;
       console.log(`Customer #${this.id} was created`);
     }
   }

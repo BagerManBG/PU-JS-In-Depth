@@ -4,9 +4,10 @@
       "events": [
         {
           "name": "Test 1",
+          "price": 15,
           "customers": [
             {
-              "fullName": "Todor Nikolov",
+              "fullName": "Todor Nikolovich",
               "sex": 0,
               "age": 20
             },
@@ -26,9 +27,9 @@
           "requireLawfulAge": false,
           "customers": [
             {
-              "fullName": "John Doe",
+              "fullName": "John Dolores",
               "sex": 1,
-              "age": 15
+              "age": 16
             }
           ]
         }
@@ -42,7 +43,8 @@
             {
               "fullName": "Todor Nikolov",
               "sex": 0,
-              "age": 20
+              "age": 20,
+              "wallet": 100
             }
           ]
         },

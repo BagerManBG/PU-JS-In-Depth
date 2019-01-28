@@ -18,14 +18,14 @@ globals.functions.loadJSON(response => {
       if (eventListData.events) {
         // Iterate through all events.
         for (const eventData of eventListData.events) {
-          const event = new Event(eventData.name, eventData.date, eventData.requireLawfulAge);
+          const event = new Event(eventData.name, eventData.date, eventData.requireLawfulAge, eventData.price);
 
           if (!event.error) {
             // Check for customers data.
             if (eventData.customers) {
               // Iterate through all customers.
               for (const customerData of eventData.customers) {
-                const customer = new Customer(customerData.fullName, customerData.sex, customerData.age);
+                const customer = new Customer(customerData.fullName, customerData.sex, customerData.age, customerData.wallet);
 
                 if (!customer.error) {
                   event.addCustomer(customer);
@@ -36,7 +36,7 @@ globals.functions.loadJSON(response => {
           }
         }
       }
-      globals.eventListCollection.eventLists.push(eventList);
+      globals.eventListCollection.eventLists[eventList.id] = eventList;
     }
   }
 });
