@@ -87,7 +87,7 @@ window.onload = () => {
    */
   processes.push(() => {
     globals.functions.coloredLog('#######   Test for 1.7   #######', 'green', '\n');
-    globals.eventListCollection.listCustomers(1, 0);
+    globals.eventListCollection.listCustomers(4, 0);
   });
 
   /**
@@ -208,6 +208,73 @@ window.onload = () => {
     globals.eventListCollection.addCustomer(1, 1); // this is customer #1's free event.
     console.log('Full Data: ', globals.eventListCollection);
     console.log(globals.customersList);
+  });
+
+  /**
+   *
+   * Part 4.
+   *
+   */
+
+  /**
+   * Test for #4.1 task.
+   */
+  processes.push(() => {
+    globals.functions.coloredLog('#######   Test for 4.1   #######', 'green', '\n');
+    const event = globals.eventListCollection.getEvent(1);
+    event
+      .archiveEvent()
+      .addCustomer(1);
+    console.log('Full Data: ', globals.eventListCollection);
+  });
+
+  /**
+   * Test for #4.2 task.
+   */
+  processes.push(() => {
+    globals.functions.coloredLog('#######   Test for 4.2   #######', 'green', '\n');
+    console.log(globals.eventListCollection.getEvent(1).getName());
+    console.log(globals.eventListCollection.getEvent(2).getName());
+  });
+
+  /**
+   * Test for #4.3 task.
+   */
+  processes.push(() => {
+    globals.functions.coloredLog('#######   Test for 4.3   #######', 'green', '\n');
+    globals.eventListCollection.filterEvents('all');
+    globals.eventListCollection.filterEvents('isClosed', false);
+    globals.eventListCollection.filterEvents('isClosed', true);
+  });
+
+  /**
+   * Test for #4.4 task.
+   */
+  processes.push(() => {
+    globals.functions.coloredLog('#######   Test for 4.4   #######', 'green', '\n');
+    const events = globals.eventListCollection.getAllEvents();
+    for (event of events) {
+      event
+        .archiveEvent()
+        .earningsReport();
+    }
+  });
+
+  /**
+   * Test for #4.5 task.
+   */
+  processes.push(() => {
+    globals.functions.coloredLog('#######   Test for 4.5   #######', 'green', '\n');
+    globals.eventListCollection.rateEvent(6, 1, 2);
+    globals.eventListCollection.rateEvent(6, 6, 10);
+  });
+
+  /**
+   * Test for #4.6 task.
+   */
+  processes.push(() => {
+    globals.functions.coloredLog('#######   Test for 4.6   #######', 'green', '\n');
+    globals.eventListCollection.listEventsGroupByRating();
   });
 
   /**

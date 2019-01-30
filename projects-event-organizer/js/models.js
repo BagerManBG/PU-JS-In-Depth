@@ -5,7 +5,59 @@ class EventListCollection {
   constructor() {
     this.id = globals.idCounter.eventListCollection ? ++globals.idCounter.eventListCollection : globals.idCounter.eventListCollection = 1;
     this.eventLists = [];
+    this.filterCriteria = {
+      name: 'string',
+      requireLawfulAge: 'boolean',
+      isClosed: 'boolean',
+      all: null,
+    };
     console.log(`EventListCollection #${this.id} was created`);
+  }
+
+  static findCustomer(id) {
+    if (globals.customersList[id]) {
+      return globals.customersList[id];
+    }
+    else {
+      console.error(`Cannot find customer with id #${id}!`);
+      return false;
+    }
+  }
+
+  rateEvent(eventId, customerId, rating) {
+    const event = this.getEvent(eventId);
+
+    if (!event) {
+      console.error('Event with id specified cannot be found!');
+    }
+    else if (!event.isClosed) {
+      console.error('Only archived events can be rated');
+    }
+    else if (!event.customers[customerId]) {
+      console.error('Customer with id specified cannot be found or is not part of this event!');
+    }
+    else if (event.ratings[customerId] !== 0) {
+      console.error('This customer has already rated the event!');
+    }
+    else if (isNaN(Number(rating))) {
+      console.error('Rating must be a number!');
+    }
+    else if (rating <= 0 || rating > 10) {
+      console.error('Rating must be a number from 1 to 10 inclusive.');
+    }
+    else {
+      event.ratings[customerId] = rating;
+      event.updateRating();
+      console.log(`Customer (#${customerId}) rated Event (#${eventId}) with a ${rating} / 10 score!`);
+    }
+  }
+
+  getEvent(id) {
+    const indexData = this.findEventIndexDataById(id);
+    if (indexData) {
+      return this.eventLists[indexData.listIndex].events[id];
+    }
+    return false;
   }
 
   findEventIndexDataById(id) {
@@ -33,6 +85,20 @@ class EventListCollection {
     return false;
   }
 
+  getAllEvents() {
+    const events = [];
+    for (const list of this.eventLists) {
+      if (list && list.events.length > 0) {
+        for (event of list.events) {
+          if (event) {
+            events.push(event);
+          }
+        }
+      }
+    }
+    return events;
+  }
+
   addEvent(listId, event) {
     if (this.eventLists[listId]) {
       this.eventLists[listId].addEvent(event);
@@ -57,22 +123,9 @@ class EventListCollection {
     }
   }
 
-  static findCustomer(id) {
-    if (globals.customersList[id]) {
-      return globals.customersList[id];
-    }
-    else {
-      console.error(`Cannot find customer with id #${id}!`);
-      return null;
-    }
-  }
-
   addCustomer(eventId, customer) {
     const indexData = this.findEventIndexDataById(eventId);
     if (indexData) {
-      if (Number.isInteger(customer)) {
-        customer = EventListCollection.findCustomer(customer);
-      }
       this.eventLists[indexData.listIndex].events[eventId].addCustomer(customer);
     }
   }
@@ -193,33 +246,52 @@ class EventListCollection {
     }
   }
 
-  filterEvents(criteria, value) {
-    if (criteria !== 'name' && criteria !== 'requireLawfulAge') {
-      console.error('Bad criteria (choose "name" or "requireLawfulAge")!');
-      return undefined;
-    }
-
-    const events = [];
-    console.log(`Searching for "${value}" in "${criteria}"`);
-
+  listEventsGroupByRating() {
     for (const list of this.eventLists) {
 
       if (list) {
         for (const event of list.events) {
 
-          if (event && event[criteria] === value) {
-            events.push(event);
+          if (event) {
+            console.log(`Event (#${event.id}) ${event.getName()}'s rating: ${event.rating ? event.rating + ' / 6' : 'Not Rated Yet'}!`);
           }
         }
       }
     }
+  }
 
-    if (events.length === 0) {
-      console.log('Search yielded no results.');
-    }
-    else {
-      for (const event of events) {
-        console.log(`Event (#${event.id}) ${event.name}: ${event.requireLawfulAge ? '18+' : 'All Ages'}`);
+  filterEvents(criteria, value = null) {
+    if (criteria in this.filterCriteria) {
+      const isCriteriaMetValue = (this.filterCriteria[criteria] === value);
+      const isCriteriaMetType = (this.filterCriteria[criteria] === typeof value);
+
+      if (!isCriteriaMetValue && !isCriteriaMetType) {
+        console.error('Bad criteria!');
+        return undefined;
+      }
+
+      const events = [];
+      globals.functions.coloredLog(`Searching by "${criteria}"...`, 'blue');
+
+      for (const list of this.eventLists) {
+
+        if (list) {
+          for (const event of list.events) {
+
+            if ((event && value === null) || (event && event[criteria] === value)) {
+              events.push(event);
+            }
+          }
+        }
+      }
+
+      if (events.length === 0) {
+        globals.functions.coloredLog('Search yielded no results.', 'red');
+      }
+      else {
+        for (const event of events) {
+          console.log(`Event (#${event.id}) ${event.getName()}: ${event.requireLawfulAge ? '18+' : 'All Ages'}`);
+        }
       }
     }
   }
@@ -269,15 +341,75 @@ class Event {
       this.requireLawfulAge = Boolean(requireLawfulAge);
       this.customers = [];
       this.price = isNaN(Number(price)) || Number(price) < 0 ? 0 : Number(price);
+      this.isClosed = false;
+      this.rating = 0;
+      this.ratings = [];
       console.log(`Event #${this.id} was created`);
     }
   }
 
+  getName() {
+    if (this.isClosed) {
+      return '~ ' + this.name;
+    }
+    return this.name;
+  }
+
+  updateRating() {
+    const ratings = this.ratings.filter(a => a > 0);
+    const ratingsTotal = ratings.reduce((a, b) => a + b, 0);
+    const ratingsLength = ratings.length;
+
+    const result = (ratingsTotal / ratingsLength) * 0.6;
+    this.rating = Math.round((result + 0.00001) * 100) / 100;
+  }
+
+  earningsReport() {
+    if (!this.isClosed) {
+      console.error('You can receive a report only from archived events!');
+    }
+    else if (this.customers.length === 0) {
+      console.log(`This event (#${this.id}) did not have any customers!`);
+    }
+    else if (this.price === 0) {
+      console.log(`This event (#${this.id}) was free!`);
+    }
+    else {
+      const total = this.price * this.customers.length;
+      console.log(`This event (#${this.id}) earned ${globals.functions.formatPrice(total)}!`);
+    }
+    return this;
+  }
+
+  archiveEvent() {
+    if (this.isClosed) {
+      console.error('This event has already been archived');
+    }
+    else {
+      this.isClosed = true;
+      for (const customer of this.customers) {
+        if (customer) {
+          this.ratings[customer.id] = 0;
+        }
+      }
+    }
+    return this;
+  }
+
   addCustomer(customer) {
-    if (!(customer instanceof Customer)) {
+    if (Number.isInteger(customer)) {
+      customer = EventListCollection.findCustomer(customer);
+    }
+    if (this.isClosed) {
+      console.error('This event is archived and customers can no longer be added!');
+    }
+    else if (!(customer instanceof Customer)) {
       console.error('You can add only objects of type Customer to this list!');
     }
     else {
+      if (this.customers[customer.id]) {
+        console.error('This customer has already been added to this event!');
+      }
       if (this.requireLawfulAge && customer.age < globals.lawfulAge) {
         console.error('This person is too young to be added to this event!');
       }

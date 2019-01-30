@@ -1,7 +1,7 @@
 const globals = {
   lawfulAge: 18,
   currencyCode: 'BGN',
-  waitForKeyInputOnTests: true,
+  waitForKeyInputOnTests: false,
   allowAdditions: true,
   eventListCollection: {},
   idCounter: {},
@@ -51,4 +51,17 @@ globals.functions.updateAdditionState = value => {
  */
 globals.functions.coloredLog = (string, color, prefix = '', suffix = '') => {
   console.log(prefix + '%c' + string + suffix, 'color: ' + color);
+};
+
+/**
+ * @param price
+ * @returns {string}
+ *
+ * A custom price formatter. Returns price
+ * formatted like this (10.00 BGN).
+ */
+globals.functions.formatPrice = price => {
+  if (!isNaN(Number(price))) {
+    return price.toFixed(2) + ' ' + globals.currencyCode;
+  }
 };
