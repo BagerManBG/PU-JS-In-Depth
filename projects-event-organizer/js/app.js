@@ -1,5 +1,6 @@
 /**
  * Task Tests.
+ *
  * Nothing in this file offers any functionality,
  * only tests of it.
  */
@@ -17,7 +18,7 @@ window.onload = () => {
    */
   processes.push(() => {
     globals.functions.coloredLog('#######   Test for 1.1   #######', 'green', '\n');
-    console.log('Full Data: ', globals.eventListCollection);
+    console.log('Full Data: ', globals);
   });
 
   /**
@@ -25,22 +26,9 @@ window.onload = () => {
    */
   processes.push(() => {
     globals.functions.coloredLog('#######   Test for 1.2   #######', 'green', '\n');
-    for (const eventList of globals.eventListCollection.eventLists) {
-
-      if (eventList) {
-        console.log(`Events for list #${eventList.id}`);
-        for (const event of eventList.events) {
-
-          if (event) {
-            console.log(`${' '.repeat(4)}Event (#${event.id}) ${event.name}: ${event.requireLawfulAge ? '18+' : 'All Ages'}`);
-            for (const customer of event.customers) {
-
-              if (customer) {
-                console.log(`${' '.repeat(8)}Customer (#${customer.id}) Name: ${customer.fullName}, Age: ${customer.age}, Sex: ${customer.sexVerbose}`);
-              }
-            }
-          }
-        }
+    for (const event of globals.eventsList) {
+      if (event) {
+        console.log(`Event (#${event.id}) ${event.getName()}: ${event.requireLawfulAge ? '18+' : 'All Ages'}.`);
       }
     }
   });
@@ -50,9 +38,8 @@ window.onload = () => {
    */
   processes.push(() => {
     globals.functions.coloredLog('#######   Test for 1.3   #######', 'green', '\n');
-    globals.eventListCollection.deleteEvent(60);
-    globals.eventListCollection.deleteEvent(5);
-    console.log('Full Data: ', globals.eventListCollection);
+    EventController.findEvent(5).deleteEvent();
+    console.log('Full Data: ', globals);
   });
 
   /**
@@ -60,8 +47,11 @@ window.onload = () => {
    */
   processes.push(() => {
     globals.functions.coloredLog('#######   Test for 1.4   #######', 'green', '\n');
-    globals.eventListCollection.addEvent(2, new Event('I was added later'));
-    console.log('Full Data: ', globals.eventListCollection);
+    EventController.addEvent({
+      name: 'I was added later',
+      requireLawfulAge: true,
+    });
+    console.log('Full Data: ', globals);
   });
 
   /**
@@ -69,8 +59,8 @@ window.onload = () => {
    */
   processes.push(() => {
     globals.functions.coloredLog('#######   Test for 1.5   #######', 'green', '\n');
-    globals.eventListCollection.updateEvent(1, 'I used to be Test 1');
-    console.log('Full Data: ', globals.eventListCollection);
+    EventController.findEvent(1).updateEvent({name: 'I used to be Test 1'});
+    console.log('Full Data: ', globals);
   });
 
   /**
@@ -78,8 +68,12 @@ window.onload = () => {
    */
   processes.push(() => {
     globals.functions.coloredLog('#######   Test for 1.6   #######', 'green', '\n');
-    globals.eventListCollection.addCustomer(6, new Customer('Hakuna Matata', 1, 19));
-    console.log('Full Data: ', globals.eventListCollection);
+    EventController.findEvent(6).addCustomer({
+      name: 'Hakuna Matata',
+      sex: 1,
+      age: 19,
+    });
+    console.log('Full Data: ', globals);
   });
 
   /**
@@ -87,7 +81,9 @@ window.onload = () => {
    */
   processes.push(() => {
     globals.functions.coloredLog('#######   Test for 1.7   #######', 'green', '\n');
-    globals.eventListCollection.listCustomers(4, 0);
+    EventController.findEvent(2).listCustomers(1);
+    EventController.findEvent(4).listCustomers(1);
+    EventController.findEvent(4).listCustomers(0);
   });
 
   /**
@@ -95,8 +91,8 @@ window.onload = () => {
    */
   processes.push(() => {
     globals.functions.coloredLog('#######   Test for 1.8   #######', 'green', '\n');
-    globals.eventListCollection.deleteCustomer(1, 1);
-    console.log('Full Data: ', globals.eventListCollection);
+    EventController.findEvent(1).removeCustomer(3);
+    console.log('Full Data: ', globals);
   });
 
   /**
@@ -111,7 +107,11 @@ window.onload = () => {
   processes.push(() => {
     globals.functions.coloredLog('#######   Test for 2.1   #######', 'green', '\n');
     globals.functions.updateAdditionState(false);
-    globals.eventListCollection.addCustomer(6, new Customer('Hakuna Matata', 1, 19));
+    EventController.findEvent(6).addCustomer({
+      name: 'Hakuna Matata',
+      sex: 1,
+      age: 19,
+    });
     globals.functions.updateAdditionState(true);
   });
 
@@ -120,9 +120,12 @@ window.onload = () => {
    */
   processes.push(() => {
     globals.functions.coloredLog('#######   Test for 2.2   #######', 'green', '\n');
-    globals.eventListCollection.addEvent(2, new Event('I was added laterer', '2019-03-31'));
-    globals.eventListCollection.updateEvent(1, null, '2019-03-31', null);
-    console.log('Full Data: ', globals.eventListCollection);
+    EventController.addEvent({
+      name: 'I was added laterer',
+      date: '2019-03-31',
+    });
+    EventController.findEvent(1).updateEvent({date: '2019-03-31'});
+    console.log('Full Data: ', globals);
   });
 
   /**
@@ -130,7 +133,7 @@ window.onload = () => {
    */
   processes.push(() => {
     globals.functions.coloredLog('#######   Test for 2.3   #######', 'green', '\n');
-    globals.eventListCollection.findLargestEvent();
+    EventController.findLargestEvent();
   });
 
   /**
@@ -138,7 +141,9 @@ window.onload = () => {
    */
   processes.push(() => {
     globals.functions.coloredLog('#######   Test for 2.4   #######', 'green', '\n');
-    globals.eventListCollection.findNonRequiringLawfulAgeEvents();
+    EventController.filterEvents('requireLawfulAge', true);
+    EventController.filterEvents('requireLawfulAge', false);
+    EventController.filterEvents('all');
   });
 
   /**
@@ -146,7 +151,7 @@ window.onload = () => {
    */
   processes.push(() => {
     globals.functions.coloredLog('#######   Test for 2.5   #######', 'green', '\n');
-    globals.eventListCollection.listEventsGroupByRequireLawfulAge();
+    EventController.groupEvents('requireLawfulAge', a => a, '*', '#');
   });
 
   /**
@@ -154,9 +159,9 @@ window.onload = () => {
    */
   processes.push(() => {
     globals.functions.coloredLog('#######   Test for 2.6   #######', 'green', '\n');
-    globals.eventListCollection.filterEvents('namennnnnn', 'Test 2');
-    globals.eventListCollection.filterEvents('name', 'Test 2');
-    globals.eventListCollection.filterEvents('requireLawfulAge', false);
+    EventController.filterEvents('namennnnnn', 'Test 2');
+    EventController.filterEvents('name', 'Test 2');
+    EventController.filterEvents('requireLawfulAge', false);
   });
 
   /**
@@ -170,9 +175,19 @@ window.onload = () => {
    */
   processes.push(() => {
     globals.functions.coloredLog('#######   Test for 3.1 (and #3.2)  #######', 'green', '\n');
-    globals.eventListCollection.addEvent(2, new Event('Dobi is free', '2019-06-31', false, 0));
-    globals.eventListCollection.addEvent(2, new Event('Dobi is freen\'t', '2019-06-31', false, 10));
-    console.log('Full Data: ', globals.eventListCollection);
+    EventController
+      .addEvent({
+        name: 'Dobi is free',
+        date: '2019-06-31',
+        price: 0,
+      });
+    EventController
+      .addEvent({
+        name: 'Dobi is freen\'t',
+        date: '2019-06-31',
+        price: 10,
+      });
+    console.log('Full Data: ', globals);
   });
 
   /**
@@ -180,7 +195,10 @@ window.onload = () => {
    */
   processes.push(() => {
     globals.functions.coloredLog('#######   Test for 3.3   #######', 'green', '\n');
-    globals.eventListCollection.listEventsGroupByPrice();
+    const events = EventController.filterEvents('all');
+    for (const event of events) {
+      console.log(`Event (#${event.id}) -> Name: "${event.getName()}".`);
+    }
   });
 
   /**
@@ -188,16 +206,15 @@ window.onload = () => {
    */
   processes.push(() => {
     globals.functions.coloredLog('#######   Test for 3.4   #######', 'green', '\n');
-    globals.eventListCollection.addCustomer(9, 4);
-    globals.eventListCollection.addCustomer(8, 1);
-    globals.eventListCollection.addCustomer(7, 1);
-    globals.eventListCollection.addCustomer(6, 1);
-    globals.eventListCollection.addCustomer(4, 1);
-    globals.eventListCollection.addCustomer(3, 1);
-    globals.eventListCollection.addCustomer(2, 5);
-    globals.eventListCollection.addCustomer(1, 5);
-    console.log('Full Data: ', globals.eventListCollection);
-    console.log(globals.customersList);
+    EventController.findEvent(9).addCustomer(4);
+    EventController.findEvent(8).addCustomer(1);
+    EventController.findEvent(7).addCustomer(1);
+    EventController.findEvent(6).addCustomer(1);
+    EventController.findEvent(4).addCustomer(1);
+    EventController.findEvent(3).addCustomer(1);
+    EventController.findEvent(2).addCustomer(5);
+    EventController.findEvent(1).addCustomer(5);
+    console.log('Full Data: ', globals);
   });
 
   /**
@@ -205,9 +222,8 @@ window.onload = () => {
    */
   processes.push(() => {
     globals.functions.coloredLog('#######   Test for 3.5   #######', 'green', '\n');
-    globals.eventListCollection.addCustomer(1, 1); // this is customer #1's free event.
-    console.log('Full Data: ', globals.eventListCollection);
-    console.log(globals.customersList);
+    EventController.findEvent(1).addCustomer(1); // this is customer #1's free event.
+    console.log('Full Data: ', globals);
   });
 
   /**
@@ -221,11 +237,11 @@ window.onload = () => {
    */
   processes.push(() => {
     globals.functions.coloredLog('#######   Test for 4.1   #######', 'green', '\n');
-    const event = globals.eventListCollection.getEvent(1);
-    event
+    EventController
+      .findEvent(1)
       .archiveEvent()
       .addCustomer(1);
-    console.log('Full Data: ', globals.eventListCollection);
+    console.log('Full Data: ', globals);
   });
 
   /**
@@ -233,8 +249,8 @@ window.onload = () => {
    */
   processes.push(() => {
     globals.functions.coloredLog('#######   Test for 4.2   #######', 'green', '\n');
-    console.log(globals.eventListCollection.getEvent(1).getName());
-    console.log(globals.eventListCollection.getEvent(2).getName());
+    console.log(EventController.findEvent(1).getName());
+    console.log(EventController.findEvent(2).getName());
   });
 
   /**
@@ -242,9 +258,9 @@ window.onload = () => {
    */
   processes.push(() => {
     globals.functions.coloredLog('#######   Test for 4.3   #######', 'green', '\n');
-    globals.eventListCollection.filterEvents('all');
-    globals.eventListCollection.filterEvents('isClosed', false);
-    globals.eventListCollection.filterEvents('isClosed', true);
+    EventController.filterEvents('all');
+    EventController.filterEvents('isClosed', false);
+    EventController.filterEvents('isClosed', true);
   });
 
   /**
@@ -252,7 +268,7 @@ window.onload = () => {
    */
   processes.push(() => {
     globals.functions.coloredLog('#######   Test for 4.4   #######', 'green', '\n');
-    const events = globals.eventListCollection.getAllEvents();
+    const events = EventController.filterEvents('all');
     for (event of events) {
       event
         .archiveEvent()
@@ -265,8 +281,14 @@ window.onload = () => {
    */
   processes.push(() => {
     globals.functions.coloredLog('#######   Test for 4.5   #######', 'green', '\n');
-    globals.eventListCollection.rateEvent(6, 1, 2);
-    globals.eventListCollection.rateEvent(6, 6, 10);
+    EventController
+      .findCustomer(1)
+      .selectEvent(6)
+      .rateEvent(2);
+    EventController
+      .findCustomer(7)
+      .selectEvent(6)
+      .rateEvent(10);
   });
 
   /**
@@ -274,7 +296,10 @@ window.onload = () => {
    */
   processes.push(() => {
     globals.functions.coloredLog('#######   Test for 4.6   #######', 'green', '\n');
-    globals.eventListCollection.listEventsGroupByRating();
+    const events = EventController.filterEvents('all');
+    for (const event of events) {
+      console.log(`Event (#${event.id}) ${event.getName()} has Rating: ${event.getRating()}`);
+    }
   });
 
   /**

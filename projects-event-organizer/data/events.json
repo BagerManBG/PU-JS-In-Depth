@@ -1,0 +1,62 @@
+{
+  "events": [
+    {
+      "name": "Test 1",
+      "price": 15,
+      "customers": [
+        {
+          "name": "Todor Nikolovich",
+          "sex": 0,
+          "age": 20
+        },
+        {
+          "name": "John Doe",
+          "sex": 1,
+          "age": 15
+        },
+        {
+          "name": "Rich Richard",
+          "sex": 1,
+          "age": 15,
+          "wallet": 300
+        }
+      ]
+    },
+    {
+      "name": "Test 2",
+      "requireLawfulAge": true
+    },
+    {
+      "name": "Test 3",
+      "requireLawfulAge": false,
+      "customers": [
+        {
+          "name": "John Dolores",
+          "sex": 1,
+          "age": 16
+        }
+      ]
+    },
+    {
+      "name": "Test 4",
+      "customers": [
+        {
+          "name": "Todor Nikolov",
+          "sex": 0,
+          "age": 20,
+          "wallet": 100
+        }
+      ]
+    },
+    {
+      "name": "I will be removed later, probably",
+      "customers": [
+        {
+          "name": "Musaka Musakanistan",
+          "sex": 0,
+          "age": 69
+        }
+      ]
+    }
+  ]
+}

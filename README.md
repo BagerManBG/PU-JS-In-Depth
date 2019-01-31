@@ -22,3 +22,9 @@ features of the projects won't be able to run if files are loaded locally withou
 
 If you are running a project without a web server, please use Mozilla Firefox Browser, since it has higher chance of
 running successful AJAX calls than Google Chrome.
+
+## Testing
+
+The JavaScript file _app.js_ is used only for predefined testing, so there won't be need for additional code writing for 
+the person testing this. Also, starting data is provided from the JSON file _events.json_, which is then loaded by
+_setup.js_, who crawls through all the data and creates the events, structured in the file.
