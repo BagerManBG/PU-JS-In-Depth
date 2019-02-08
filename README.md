@@ -4,7 +4,8 @@
 
 1. __uni-js-hello-world__ / __projects-event-organizer__
     * Task - http://js.mihail-petrov.me/projects/project_1.pdf
-    
+1. __projectjs-dom-calendar__
+    * Task - http://js.mihail-petrov.me/projects/project_2.pdf
 ## Running the Projects
 
 Running a project is advised to be through a local web server with CORS enabled. Preferred method would be through a
