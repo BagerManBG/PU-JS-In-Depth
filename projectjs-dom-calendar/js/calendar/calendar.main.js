@@ -51,6 +51,14 @@ window.onload = () => {
   });
 
   /**
+   * Closes modal window for events.
+   */
+  globals.elements.eventsModal.close.on('click', function () {
+    globals.elements.eventsModal.overlay.css('display', 'none');
+    globals.elements.eventsModal.modal.css('display', 'none');
+  });
+
+  /**
    * Debug
    */
   console.log(globals);

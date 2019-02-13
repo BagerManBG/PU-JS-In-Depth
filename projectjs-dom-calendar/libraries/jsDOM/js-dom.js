@@ -148,7 +148,7 @@ class jsDOM {
   /**
    * @param attr
    * @param value
-   * @returns {jsDOM|String}
+   * @returns {String|jsDOM}
    *
    * Returns the value of an attribute if
    * the value param is empty. Sets the selected

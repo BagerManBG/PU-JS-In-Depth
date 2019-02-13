@@ -6,7 +6,14 @@
  *   },
  *   elements: {
  *     titleYear: jsDOM,
- *     titleMonth: jsDOM
+ *     titleMonth: jsDOM,
+ *     eventsModal: {
+ *       overlay: jsDOM,
+ *       modal: jsDOM,
+ *       selectedDay: jsDOM,
+ *       events: jsDOM,
+ *       close: jsDOM,
+ *     },
  *   },
  *   isLeapYear: function,
  *   updateSelected: function,
@@ -33,6 +40,13 @@ const globals = {
   elements: {
     titleYear: selectDOM('.title-year .title-year--value'),
     titleMonth: selectDOM('.title-month .title-month--value'),
+    eventsModal: {
+      overlay: selectDOM('.overlay'),
+      modal: selectDOM('.events-modal'),
+      selectedDay: selectDOM('.events-modal .selected-day'),
+      events: selectDOM('.events-modal .events'),
+      close: selectDOM('.events-modal .close-modal'),
+    },
   },
 
   /**
@@ -44,7 +58,7 @@ const globals = {
     const eventsObj = loadJSON('./data/events.json');
 
     if (eventsObj && eventsObj.hasOwnProperty('events')) {
-      const events =  eventsObj.events
+      const events =  eventsObj.events;
       events.forEach(e => e.date = new Date(e.timestamp));
       events.sort((a, b) => a.date > b.date);
 
@@ -115,6 +129,34 @@ const globals = {
 
     globals.buildGrid();
     globals.fillEvents();
+
+    selectDOM('[data-month="current"]').on('click', function () {
+      const $this = selectDOM(this);
+
+      globals.elements.eventsModal.overlay.css('display', 'block');
+      globals.elements.eventsModal.modal.css('display', 'block');
+
+      const year = globals.selectedDate.year;
+      const month = globals.selectedDate.month.getCurrent();
+      const day = Number($this.attr('data-day'));
+
+      const date = new Date(year, month, day);
+      globals.elements.eventsModal.selectedDay.text(date.toDateString());
+
+      const events = globals.eventData[year][month].filter(e => e.date.getDate() === day);
+      globals.elements.eventsModal.events.children().delete();
+
+      if (events.length > 0) {
+        for (const event of events) {
+          globals.elements.eventsModal.events.append(`
+          <p>${event.text} at ${event.date.toLocaleTimeString('en-US')}</p>
+        `);
+        }
+      }
+      else {
+        globals.elements.eventsModal.events.append('<p>No events for this day!</p>');
+      }
+    });
   },
 
   /**
@@ -178,8 +220,8 @@ const globals = {
       const dayCondition   = (grid[i] === today.getDate());
       const isCurrentDay = (!notCurrentMonth && yearCondition && monthCondition && dayCondition);
 
-      const classString = `class="day col-sm p-2 border border-left-0 border-top-0 border-dark text-truncate d-none d-sm-inline-block ${notCurrentMonth ? 'text-muted' : (isCurrentDay ? 'bg-warning' : 'bg-light')}"`;
-      const dataString = !notCurrentMonth ? `data-day="${grid[i]}"` : '';
+      const classString = `class="day col-sm p-2 border border-left-0 border-top-0 border-dark text-truncate d-none d-sm-inline-block ${notCurrentMonth ? 'text-muted' : 'cursor-pointer ' + (isCurrentDay ? 'bg-warning' : 'bg-light')}"`;
+      const dataString = !notCurrentMonth ? `data-day="${grid[i]}" data-month="current"` : 'data-month="other"';
 
       container.append(`
         <div ${classString} ${dataString}>
