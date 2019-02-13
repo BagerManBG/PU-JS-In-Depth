@@ -324,33 +324,4 @@ class jsDOM {
   }
 }
 
-/**
- * @returns {Object}
- *
- * Helper method for copying an object.
- */
-Object.prototype.clone = function () {
-  if (typeof this !== 'object' || this === null) {
-    return this;
-  }
-
-  const clonedObj = {};
-  const obj = this;
-
-  for (const prop in obj) {
-    if (obj.hasOwnProperty(prop)) {
-
-      let value = obj[prop];
-      if (value instanceof Object) {
-        value = value.clone();
-      }
-
-      clonedObj[prop] = value;
-    }
-  }
-
-  return clonedObj;
-};
-
-const
-  selectDOM = selector => new jsDOM(selector);
+const selectDOM = selector => new jsDOM(selector);

@@ -5,10 +5,7 @@
  * after the page has loaded.
  */
 window.onload = () => {
-  globals.elements.titleYear.text(globals.selectedDate.year);
-  globals.elements.titleMonth.text(globals.getMonthName(globals.selectedDate.month.getCurrent()));
-
-  globals.buildGrid();
+  globals.updateCalendar();
 
   /**
    * Registering an event subscriber for Year Arrows.

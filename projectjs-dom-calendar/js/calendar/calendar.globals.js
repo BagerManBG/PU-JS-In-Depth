@@ -36,6 +36,43 @@ const globals = {
   },
 
   /**
+   * @returns {Object|boolean}
+   *
+   * Starting data for events fetched from events.json file.
+   */
+  eventData: (function(){
+    const eventsObj = loadJSON('./data/events.json');
+
+    if (eventsObj && eventsObj.hasOwnProperty('events')) {
+      const events =  eventsObj.events
+      events.forEach(e => e.date = new Date(e.timestamp));
+      events.sort((a, b) => a.date > b.date);
+
+      const result = {};
+      for (const event of events) {
+
+        const year = event.date.getFullYear();
+        const month = event.date.getMonth();
+        
+        if (!result[year]) {
+          result[year] = {};
+        }
+
+        if (!result[year][month]) {
+          result[year][month] = [];
+        }
+
+        result[year][month].push(event);
+      }
+
+      return result;
+    }
+
+    console.error('Events JSON is in bad format!');
+    return false;
+  })(),
+
+  /**
    * @param year
    * @returns {boolean}
    *
@@ -65,10 +102,19 @@ const globals = {
     if (data.month) globals.selectedDate.month.setPointer(data.month);
     if (data.year) globals.selectedDate.year = data.year;
 
+    globals.updateCalendar();
+  },
+
+  /**
+   * Updates the UI part of the calendar, using the variables
+   * that are stored globally.
+   */
+  updateCalendar: () => {
     globals.elements.titleYear.text(globals.selectedDate.year);
     globals.elements.titleMonth.text(globals.getMonthName(globals.selectedDate.month.getCurrent()));
 
     globals.buildGrid();
+    globals.fillEvents();
   },
 
   /**
@@ -132,11 +178,14 @@ const globals = {
       const dayCondition   = (grid[i] === today.getDate());
       const isCurrentDay = (!notCurrentMonth && yearCondition && monthCondition && dayCondition);
 
+      const classString = `class="day col-sm p-2 border border-left-0 border-top-0 border-dark text-truncate d-none d-sm-inline-block ${notCurrentMonth ? 'text-muted' : (isCurrentDay ? 'bg-warning' : 'bg-light')}"`;
+      const dataString = !notCurrentMonth ? `data-day="${grid[i]}"` : '';
+
       container.append(`
-        <div class="day col-sm p-2 border border-left-0 border-top-0 border-dark text-truncate d-none d-sm-inline-block ${notCurrentMonth ? 'text-muted' : (isCurrentDay ? 'bg-warning' : 'bg-light')}">
+        <div ${classString} ${dataString}>
           <h5 class="row align-items-center">
             <span class="date col-1">${grid[i]}</span>
-            <span class="col-1"></span>
+            <span class="col-1"></span>           
           </h5>
         </div>
       `);
@@ -146,4 +195,49 @@ const globals = {
       }
     }
   },
+
+  /**
+   * Builds the events into the calendar.
+   */
+  fillEvents: () => {
+    const currentEvents = globals.eventData[globals.selectedDate.year][globals.selectedDate.month.getCurrent()];
+
+    if (currentEvents) {
+      for (const event of currentEvents) {
+        selectDOM(`[data-day="${event.date.getDate()}"]`).append(`
+        <a class="event d-block p-1 pl-2 pr-2 mb-1 rounded text-truncate small bg-info text-white" title="${event.text}">${event.text}</a>
+      `);
+      }
+    }
+  },
 };
+
+/**
+ * @param url
+ * @returns {Object|boolean}
+ *
+ * Gets JSON data from a file and returns it as an Array.
+ */
+function loadJSON (url) {
+  if (!/\.json$/.test(url)) {
+    console.error('Target is not a JSON file!');
+    return false;
+  }
+
+  let resultArr = [];
+  const xobj = new XMLHttpRequest();
+  xobj.overrideMimeType("application/json");
+  xobj.open('GET', url, false);
+  xobj.onreadystatechange = function () {
+    if (xobj.readyState === 4 && xobj.status === 200) {
+      resultArr = JSON.parse(xobj.responseText);
+    }
+    else {
+      console.error(`Could not retrieve data from ${url}!`);
+      return false;
+    }
+  };
+  xobj.send(null);
+
+  return resultArr;
+}
