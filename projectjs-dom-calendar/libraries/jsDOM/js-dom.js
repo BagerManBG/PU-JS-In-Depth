@@ -10,8 +10,15 @@ class jsDOM {
    * the elements and saving them as an array.
    */
   constructor(selector = null) {
-    this.elements = [];
-    this.elements = Array.from(document.querySelectorAll(selector));
+    if (typeof selector === 'string') {
+      this.elements = Array.from(document.querySelectorAll(selector));
+    }
+    else if (typeof selector === 'object' && selector !== null) {
+      this.elements = [selector];
+    }
+    else {
+      this.elements = [];
+    }
   }
 
   /**
@@ -23,6 +30,18 @@ class jsDOM {
    */
   static create(selector) {
     return new jsDOM(selector);
+  }
+
+  /**
+   * @param htmlString
+   * @returns {Node}
+   *
+   * Creates a DOM Node Element from given markup.
+   */
+  static createElementFromHTML(htmlString) {
+    const div = document.createElement('div');
+    div.innerHTML = htmlString.trim();
+    return div.firstChild;
   }
 
   /**
@@ -104,7 +123,10 @@ class jsDOM {
    * HTML for the elements.
    */
   prepend(markup) {
-    this.elements.forEach(el => el.innerHTML = markup + el.innerHTML);
+    this.elements.forEach(el => {
+      const newElem = jsDOM.createElementFromHTML(markup);
+      el.insertBefore(newElem, el.firstChild);
+    });
     return this;
   }
 
@@ -116,7 +138,10 @@ class jsDOM {
    * HTML for the elements.
    */
   append(markup) {
-    this.elements.forEach(el => el.innerHTML += markup);
+    this.elements.forEach(el => {
+      const newElem = jsDOM.createElementFromHTML(markup);
+      el.appendChild(newElem)
+    });
     return this;
   }
 
@@ -284,6 +309,18 @@ class jsDOM {
       children.elements = Array.from(this.elements[0].children).filter((el, i) => !isNaN(Number(i)));
       return children;
     }
+  }
+
+  /**
+   * @param event
+   * @param callback
+   * @returns {jsDOM}
+   *
+   * Binds an event to the selected elements.
+   */
+  on(event, callback) {
+    this.elements.forEach(el => el.addEventListener.call(el, event, callback));
+    return this;
   }
 }
 

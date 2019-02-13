@@ -156,6 +156,17 @@ window.onload = () => {
   (function () {
     console.log('%c#######   Test for 1.6   #######', 'color: green');
 
+    selectDOM('p').elements.forEach(el => el.addEventListener('click', e => console.log(e)));
+
+    console.log();
+  })();
+
+  /**
+   * Test for #1.7/8 task.
+   */
+  (function () {
+    console.log('%c#######   Test for 1.7/8   #######', 'color: green');
+
     selectDOM('body').prepend('<div class="chain"><p>Chaining</p></div>');
     selectDOM('.chain')
       .attr('id', 'chain')
