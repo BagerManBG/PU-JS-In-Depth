@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Calendar</title>
+
+    <link rel="shortcut icon" type="image/ico" href="./favicon.ico" />
+
+    <link rel="stylesheet" href="libraries/bootstrap/bootstrap-reboot.min.css">
+    <link rel="stylesheet" href="libraries/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="libraries/bootstrap/bootstrap-grid.min.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="css/main.css">
+  </head>
+  <body>
+    <h1 class="text-center d-md-none">Resolution below 768px is not supported</h1>
+
+    <div class="container-fluid d-md-block d-none">
+      <header>
+        <h4 class="display-4 mb-4 text-center">
+          <div class="title-year row justify-content-center">
+            <button class="w3-button w3-xlarge w3-black arrow col-1" data-direction="prev"> <- </button>
+            <span class="title-year--value bg-light col-3"></span>
+            <button class="w3-button w3-xlarge w3-black arrow col-1" data-direction="next"> -> </button>
+          </div>
+          <div class="title-month row justify-content-center mt-1">
+            <button class="w3-button w3-xlarge w3-black arrow col-1" data-direction="prev"> <- </button>
+            <span class="title-month--value bg-light col-3"></span>
+            <button class="w3-button w3-xlarge w3-black arrow col-1" data-direction="next"> -> </button>
+          </div>
+        </h4>
+        <div class="row d-none d-sm-flex p-1 bg-dark text-white">
+          <h5 class="col-sm p-1 text-center">Monday</h5>
+          <h5 class="col-sm p-1 text-center">Tuesday</h5>
+          <h5 class="col-sm p-1 text-center">Wednesday</h5>
+          <h5 class="col-sm p-1 text-center">Thursday</h5>
+          <h5 class="col-sm p-1 text-center">Friday</h5>
+          <h5 class="col-sm p-1 text-center">Saturday</h5>
+          <h5 class="col-sm p-1 text-center">Sunday</h5>
+        </div>
+      </header>
+      <div class="row border border-right-0 border-bottom-0 border-dark calendar-container">
+        <!-- Calendar Elements will go here -->
+      </div>
+    </div>
+
+    <script src="libraries/LinkedList/linkedList.js"></script>
+    <script src="libraries/jsDOM/js-dom.js"></script>
+    <script src="js/calendar/calendar.globals.js"></script>
+    <script src="js/calendar/calendar.main.js"></script>
+  </body>
+</html>

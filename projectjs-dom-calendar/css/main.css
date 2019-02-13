@@ -1,0 +1,19 @@
+.day {
+  height: 14.2857vw;
+}
+
+.title-year .title-year--value, .title-year .arrow,
+.title-month .title-month--value, .title-month .arrow {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.title-year .title-year--value,
+.title-month .title-month--value {
+  font-size: 40px !important;
+  vertical-align: middle;
+}
+
+.title-year .arrow, .title-month .arrow {
+  font-size: 34px !important;
+}
