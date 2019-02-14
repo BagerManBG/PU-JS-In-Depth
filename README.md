@@ -32,6 +32,12 @@ _setup.js_, who crawls through all the data and creates the events, structured i
 
 ## Testing for Task #2 (_projectjs-dom-calendar)
 
-The JavaScript file _app.js_ is used only for predefined testing of the jsDOM library, so there won't be need for additional code writing for the person testing this. The HTML file _index.html_ contains initial markup, so the library can be tested there.
+The JavaScript file _app.js_ is used only for predefined testing of the jsDOM library, so there won't be need for 
+additional code writing for the person testing this. The HTML file _index.html_ contains initial markup, so the library
+can be tested there.
 
-Calendar is located in _calendar.html_. The initial value for it will be set to the current month. If the current month and year are selected, the current day of the month will be with a different background color.
+Calendar is located in _calendar.html_. The initial value for it will be set to the current month. If the current month
+and year are selected, the current day of the month will be with a different background color. When you click on a date,
+you will get additional info about events for this date. You can change the view mode to "week", than you will have the
+option to move across different weeks, instead of months. If you focus on the input date picker field and after that you
+click on a day, the date will be inputted as a value of the field.
