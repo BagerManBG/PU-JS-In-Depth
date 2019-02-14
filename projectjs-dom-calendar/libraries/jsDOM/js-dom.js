@@ -186,6 +186,22 @@ class jsDOM {
 
   /**
    * @param value
+   * @returns {*|jsDOM}
+   *
+   * Returns the value of an element if the value param
+   * is empty. Sets the element value if value is not empty.
+   */
+  val(value = null) {
+    if (value === null && this.checkForSingleElement()) {
+      return this.elements[0].value;
+    }
+
+    this.elements.forEach(el => el.value = String(value));
+    return this;
+  }
+
+  /**
+   * @param value
    * @returns {jsDOM|String}
    *
    * Return the text of an element if value is

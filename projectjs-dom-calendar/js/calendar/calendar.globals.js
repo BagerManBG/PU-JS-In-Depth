@@ -149,7 +149,7 @@ const globals = {
 
       if (globals.elements.datePicker.prop('focused')) {
         const date = new Date(globals.selectedDate.year, Number($this.attr('data-month')), Number($this.attr('data-day')));
-        globals.elements.datePicker.attr('value', date.toDateString())
+        globals.elements.datePicker.val(date.toDateString())
       }
       else {
         globals.elements.eventsModal.overlay.css('display', 'block');
