@@ -1,12 +1,26 @@
 /**
+ * @returns {number}
+ *
+ * Custom getWeek function for the Date object.
+ */
+Date.prototype.getWeek = function () {
+  const oneJan = new Date(this.getFullYear(), 0, 1);
+  return Math.ceil((((this - oneJan) / 86400000) + oneJan.getDay() + 1) / 7);
+};
+
+/**
  * @type {{
+ *   calendarView: string,
  *   selectedDate: {
  *     year: number,
  *     month: LinkedList
+ *     week: LinkedList
  *   },
  *   elements: {
  *     titleYear: jsDOM,
  *     titleMonth: jsDOM,
+ *     viewModeSwitch: jsDOM,
+ *     datePicker: jsDOM,
  *     eventsModal: {
  *       overlay: jsDOM,
  *       modal: jsDOM,
@@ -15,11 +29,13 @@
  *       close: jsDOM,
  *     },
  *   },
+ *   eventData: object,
  *   isLeapYear: function,
  *   updateSelected: function,
  *   getMonthName: function,
  *   getTotalDays: function,
  *   buildGrid: function,
+ *   fillEvents: function,
  * }}
  *
  * Global variable which contains constants and
@@ -27,11 +43,17 @@
  */
 const globals = {
   /**
+   * Currently selected view for calendar.
+   */
+  calendarView: 'month',
+
+  /**
    * Currently selected year and month for the calendar view.
    */
   selectedDate: {
     year: new Date().getFullYear(),
     month: new LinkedList(Array.from(Array(12).keys())).setPointer(new Date().getMonth()),
+    week: new LinkedList(Array.from(Array(53).keys()).map(i => i + 1)).setPointer(new Date().getWeek() - 1),
   },
 
   /**
@@ -40,6 +62,9 @@ const globals = {
   elements: {
     titleYear: selectDOM('.title-year .title-year--value'),
     titleMonth: selectDOM('.title-month .title-month--value'),
+    titleWeek: selectDOM('.title-week .title-week--value'),
+    viewModeSwitch: selectDOM('.calendar-view-switch'),
+    datePicker: selectDOM('input[name="date-picker"]'),
     eventsModal: {
       overlay: selectDOM('.overlay'),
       modal: selectDOM('.events-modal'),
@@ -99,62 +124,57 @@ const globals = {
   },
 
   /**
-   * @param data
-   *
-   * Updates the currently selected year and month and redraws the
-   * calendar with the new values.
-   */
-  updateSelected: (...data) => {
-    if (data.month > 11) {
-      data.month = 0;
-    }
-
-    if (data.year < 0) {
-      data.month = new Date().getFullYear();
-    }
-
-    if (data.month) globals.selectedDate.month.setPointer(data.month);
-    if (data.year) globals.selectedDate.year = data.year;
-
-    globals.updateCalendar();
-  },
-
-  /**
    * Updates the UI part of the calendar, using the variables
    * that are stored globally.
    */
   updateCalendar: () => {
+    const useWeekView = globals.elements.viewModeSwitch.prop('checked');
+
+    globals.elements.titleWeek.parent().css('display', useWeekView ? 'flex' : 'none');
+    globals.elements.titleMonth.parent().css('display', useWeekView ? 'none' : 'flex');
+
     globals.elements.titleYear.text(globals.selectedDate.year);
     globals.elements.titleMonth.text(globals.getMonthName(globals.selectedDate.month.getCurrent()));
+    globals.elements.titleWeek.text('Week ' + globals.selectedDate.week.getCurrent());
 
     globals.buildGrid();
     globals.fillEvents();
 
-    selectDOM('[data-month="current"]').on('click', function () {
+    /**
+     * On click at a date tile it opens all events. But if the date picker was
+     * previously focused, then it sets the selected date as it's value.
+     */
+    selectDOM('[data-month-state="current"]').on('click', function () {
       const $this = selectDOM(this);
 
-      globals.elements.eventsModal.overlay.css('display', 'block');
-      globals.elements.eventsModal.modal.css('display', 'block');
-
-      const year = globals.selectedDate.year;
-      const month = globals.selectedDate.month.getCurrent();
-      const day = Number($this.attr('data-day'));
-
-      const date = new Date(year, month, day);
-      globals.elements.eventsModal.selectedDay.text(date.toDateString());
-
-      const events = globals.eventData[year][month].filter(e => e.date.getDate() === day);
-      globals.elements.eventsModal.events.children().delete();
-
-      if (events.length > 0) {
-        for (const event of events) {
-          globals.elements.eventsModal.events.append(`
-          <p>${event.text} at ${event.date.toLocaleTimeString('en-US')}</p>
-        `);
-        }
+      if (globals.elements.datePicker.prop('focused')) {
+        const date = new Date(globals.selectedDate.year, Number($this.attr('data-minth')), Number($this.attr('data-day')));
+        globals.elements.datePicker.attr('value', date.toDateString())
       }
       else {
-        globals.elements.eventsModal.events.append('<p>No events for this day!</p>');
+        globals.elements.eventsModal.overlay.css('display', 'block');
+        globals.elements.eventsModal.modal.css('display', 'block');
+
+        const year = globals.selectedDate.year;
+        const month = globals.selectedDate.month.getCurrent();
+        const day = Number($this.attr('data-day'));
+
+        const date = new Date(year, month, day);
+        globals.elements.eventsModal.selectedDay.text(date.toDateString());
+
+        const events = globals.eventData[year][month].filter(e => e.date.getDate() === day);
+        globals.elements.eventsModal.events.children().delete();
+
+        if (events.length > 0) {
+          for (const event of events) {
+            globals.elements.eventsModal.events.append(`
+            <p>${event.text} at ${event.date.toLocaleTimeString('en-US')}</p>
+          `);
+          }
+        }
+        else {
+          globals.elements.eventsModal.events.append('<p>No events for this day!</p>');
+        }
       }
     });
   },
@@ -181,52 +201,109 @@ const globals = {
   },
 
   /**
+   * @param view
+   *
    * Builds the HTML calendar.
    */
-  buildGrid: () => {
-    const days = globals.getTotalDays(globals.selectedDate.year, globals.selectedDate.month.getCurrent());
+  buildGrid: (view = globals.calendarView) => {
+    let grid = [];
 
-    let weekDayStart = new Date(globals.selectedDate.year, globals.selectedDate.month.getCurrent(), 1).getDay();
-    let weekDayEnd = new Date(globals.selectedDate.year, globals.selectedDate.month.getCurrent(), days).getDay();
+    if (view === 'month') {
+      const days = globals.getTotalDays(globals.selectedDate.year, globals.selectedDate.month.getCurrent());
 
-    weekDayStart = weekDayStart === 0 ? 6 : weekDayStart - 1;
-    weekDayEnd = weekDayEnd === 0 ? 6 : weekDayEnd - 1;
+      let weekDayStart = new Date(globals.selectedDate.year, globals.selectedDate.month.getCurrent(), 1).getDay();
+      let weekDayEnd = new Date(globals.selectedDate.year, globals.selectedDate.month.getCurrent(), days).getDay();
 
-    const grid = Array.from(Array(days).keys()).map(n => ++n);
+      weekDayStart = weekDayStart === 0 ? 6 : weekDayStart - 1;
+      weekDayEnd = weekDayEnd === 0 ? 6 : weekDayEnd - 1;
 
-    const prevMonth = globals.selectedDate.month.clone().prev().getCurrent();
-    const prevMonthDays = globals.getTotalDays(globals.selectedDate.year, prevMonth);
+      grid = Array.from(Array(days).keys()).map(n => {
+        return {
+          date: ++n,
+          month: '',
+          notCurrentMonth: false,
+        };
+      });
 
-    const prevMonthTarget = prevMonthDays - weekDayStart;
-    for (let i = prevMonthDays; i > prevMonthTarget; i--) {
-      grid.unshift(i);
+      const prevMonth = globals.selectedDate.month.clone().prev().getCurrent();
+      const prevMonthDays = globals.getTotalDays(globals.selectedDate.year, prevMonth);
+
+      const prevMonthTarget = prevMonthDays - weekDayStart;
+      const nextMonthTarget = 7 - weekDayEnd;
+
+      for (let i = prevMonthDays; i > prevMonthTarget; i--) {
+        grid.unshift({
+          date: i,
+          month: '',
+          notCurrentMonth: true,
+        });
+      }
+
+
+      for (let i = 1; i < nextMonthTarget; i++) {
+        grid.push({
+          date: i,
+          month: '',
+          notCurrentMonth: true,
+        });
+      }
     }
+    else if (view === 'week') {
+      const firstDate = new Date(globals.selectedDate.year, 0, 1);
+      const firstDayValue = firstDate.getDay();
+      let currentDayOffset = firstDayValue - 1;
 
-    const nextMonthTarget = 7 - weekDayEnd;
-    for (let i = 1; i < nextMonthTarget; i++) {
-      grid.push(i);
+      if (globals.selectedDate.week.getCurrent() === 1) {
+        const daysInDecember = 31;
+        currentDayOffset = 0;
+
+        for (let i = daysInDecember; i > daysInDecember - firstDayValue + 1; i--) {
+          grid.unshift({
+            date: i,
+            month: 11,
+            notCurrentMonth: true,
+          });
+        }
+      }
+
+      const currentDay = ((globals.selectedDate.week.getCurrent() - 1) * 7) + 1 - currentDayOffset;
+      const currentDate = new Date(globals.selectedDate.year, 0, currentDay);
+      const target = currentDayOffset === 0 ? 8 - firstDayValue : 7;
+
+      for (let i = 0; i < target; i++) {
+
+        const date = currentDate.getDate();
+        const month = currentDate.getMonth();
+        const year = currentDate.getFullYear();
+
+        currentDate.setDate(date + 1);
+
+        grid.push({
+          date: date,
+          month: month,
+          notCurrentMonth: (year !== globals.selectedDate.year),
+        });
+      }
     }
 
     const container = selectDOM('.calendar-container');
     container.children().delete();
 
     for (let i = 0; i < grid.length; i++) {
-
-      const notCurrentMonth = ((i < 7 &&  grid[i] > prevMonthTarget) || (i > 28 &&  grid[i] < nextMonthTarget));
-
       const today = new Date();
       const yearCondition  = (globals.selectedDate.year === today.getFullYear());
-      const monthCondition = (globals.selectedDate.month.getCurrent() === today.getMonth());
-      const dayCondition   = (grid[i] === today.getDate());
-      const isCurrentDay = (!notCurrentMonth && yearCondition && monthCondition && dayCondition);
+      const weekCondition  = view === 'week' ? (globals.selectedDate.week.getCurrent() === today.getWeek()) : false;
+      const monthCondition = view === 'month' ? (globals.selectedDate.month.getCurrent() === today.getMonth()) : false;
+      const dayCondition   = (grid[i].date === today.getDate());
+      const isCurrentDay   = (!grid[i].notCurrentMonth && yearCondition && (monthCondition || weekCondition) && dayCondition);
 
-      const classString = `class="day col-sm p-2 border border-left-0 border-top-0 border-dark text-truncate d-none d-sm-inline-block ${notCurrentMonth ? 'text-muted' : 'cursor-pointer ' + (isCurrentDay ? 'bg-warning' : 'bg-light')}"`;
-      const dataString = !notCurrentMonth ? `data-day="${grid[i]}" data-month="current"` : 'data-month="other"';
+      const classString = `class="day col-sm p-2 border border-left-0 border-top-0 border-dark text-truncate d-none d-sm-inline-block ${grid[i].notCurrentMonth ? 'text-muted' : 'cursor-pointer ' + (isCurrentDay ? 'bg-warning' : 'bg-light')}"`;
+      const dataString = !grid[i].notCurrentMonth ? `data-day="${grid[i].date}" data-month="${grid[i].month || globals.selectedDate.month.getCurrent()}" data-month-state="current"` : 'data-month-state="other"';
 
       container.append(`
         <div ${classString} ${dataString}>
           <h5 class="row align-items-center">
-            <span class="date col-1">${grid[i]}</span>
+            <span class="date col-1">${grid[i].date} ${globals.getMonthName(grid[i].month)}</span>
             <span class="col-1"></span>           
           </h5>
         </div>
@@ -242,13 +319,16 @@ const globals = {
    * Builds the events into the calendar.
    */
   fillEvents: () => {
-    const currentEvents = globals.eventData[globals.selectedDate.year][globals.selectedDate.month.getCurrent()];
+    if (globals.eventData[globals.selectedDate.year]) {
+      const currentEvents = globals.eventData[globals.selectedDate.year][globals.selectedDate.month.getCurrent()];
 
-    if (currentEvents) {
-      for (const event of currentEvents) {
-        selectDOM(`[data-day="${event.date.getDate()}"]`).append(`
-        <a class="event d-block p-1 pl-2 pr-2 mb-1 rounded text-truncate small bg-info text-white" title="${event.text}">${event.text}</a>
-      `);
+      if (currentEvents) {
+        for (const event of currentEvents) {
+          console.log(event);
+          selectDOM(`[data-day="${event.date.getDate()}"][data-month="${event.date.getMonth()}"]`).append(`
+            <a class="event d-block p-1 pl-2 pr-2 mb-1 rounded text-truncate small bg-info text-white" title="${event.text}">${event.text}</a>
+          `);
+        }
       }
     }
   },

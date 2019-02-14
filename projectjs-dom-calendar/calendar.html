@@ -44,15 +44,41 @@
             <span class="title-month--value bg-light col-3"></span>
             <button class="w3-button w3-xlarge w3-black arrow col-1" data-direction="next"> -> </button>
           </div>
+          <div class="title-week row justify-content-center mt-1">
+            <button class="w3-button w3-xlarge w3-black arrow col-1" data-direction="prev"> <- </button>
+            <span class="title-week--value bg-light col-3">Week 1</span>
+            <button class="w3-button w3-xlarge w3-black arrow col-1" data-direction="next"> -> </button>
+          </div>
         </h4>
-        <div class="row d-none d-sm-flex p-1 bg-dark text-white">
-          <h5 class="col-sm p-1 text-center">Monday</h5>
-          <h5 class="col-sm p-1 text-center">Tuesday</h5>
-          <h5 class="col-sm p-1 text-center">Wednesday</h5>
-          <h5 class="col-sm p-1 text-center">Thursday</h5>
-          <h5 class="col-sm p-1 text-center">Friday</h5>
-          <h5 class="col-sm p-1 text-center">Saturday</h5>
-          <h5 class="col-sm p-1 text-center">Sunday</h5>
+
+        <div class="d-flex justify-content-center align-items-center">
+          <p class="mr-3 font-weight-bold">Month View</p>
+          <div>
+            <label class="switch">
+              <input type="checkbox" class="calendar-view-switch">
+              <span class="slider round"></span>
+            </label>
+          </div>
+          <p class="ml-3 font-weight-bold">Week View</p>
+
+          <div class="d-flex justify-content-center ml-5 w-25">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">Date Picker</span>
+              </div>
+              <input type="text" name="date-picker" class="form-control" placeholder="Select a date after you have focused" aria-label="Username" aria-describedby="basic-addon1">
+            </div>
+          </div>
+        </div>
+
+        <div class="row d-none d-sm-flex p-1 bg-dark text-white calendar-header">
+          <h5 class="col-sm p-1 text-center calendar-header--value">Monday</h5>
+          <h5 class="col-sm p-1 text-center calendar-header--value">Tuesday</h5>
+          <h5 class="col-sm p-1 text-center calendar-header--value">Wednesday</h5>
+          <h5 class="col-sm p-1 text-center calendar-header--value">Thursday</h5>
+          <h5 class="col-sm p-1 text-center calendar-header--value">Friday</h5>
+          <h5 class="col-sm p-1 text-center calendar-header--value">Saturday</h5>
+          <h5 class="col-sm p-1 text-center calendar-header--value">Sunday</h5>
         </div>
       </header>
       <div class="row border border-right-0 border-bottom-0 border-dark calendar-container">

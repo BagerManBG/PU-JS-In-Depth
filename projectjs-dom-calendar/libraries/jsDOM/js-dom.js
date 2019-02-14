@@ -157,12 +157,31 @@ class jsDOM {
    */
   attr(attr, value = null) {
     if (value === null && this.checkForSingleElement()) {
-      return this.elements[0].attributes.getNamedItem(attr).value;
+      const item = this.elements[0].attributes.getNamedItem(attr);
+      return item ? item.value : '';
     }
-    else {
-      this.elements.forEach(el => el.setAttribute(String(attr), String(value)));
-      return this;
+
+    this.elements.forEach(el => el.setAttribute(String(attr), String(value)));
+    return this;
+  }
+
+  /**
+   * @param prop
+   * @param value
+   * @returns {*|jsDOM}
+   *
+   * Returns the value of an attribute if
+   * the value param is empty. Sets the selected
+   * attribute to the specified value if value is
+   * not empty.
+   */
+  prop(prop, value = null) {
+    if (value === null && this.checkForSingleElement()) {
+      return this.elements[0][prop];
     }
+
+    this.elements.forEach(el => el[String(prop)] = Boolean(value));
+    return this;
   }
 
   /**
