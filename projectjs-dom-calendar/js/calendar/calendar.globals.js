@@ -92,7 +92,7 @@ const globals = {
 
         const year = event.date.getFullYear();
         const month = event.date.getMonth();
-        
+
         if (!result[year]) {
           result[year] = {};
         }
@@ -148,7 +148,7 @@ const globals = {
       const $this = selectDOM(this);
 
       if (globals.elements.datePicker.prop('focused')) {
-        const date = new Date(globals.selectedDate.year, Number($this.attr('data-minth')), Number($this.attr('data-day')));
+        const date = new Date(globals.selectedDate.year, Number($this.attr('data-month')), Number($this.attr('data-day')));
         globals.elements.datePicker.attr('value', date.toDateString())
       }
       else {
@@ -156,20 +156,26 @@ const globals = {
         globals.elements.eventsModal.modal.css('display', 'block');
 
         const year = globals.selectedDate.year;
-        const month = globals.selectedDate.month.getCurrent();
+        const secondSelector = globals.selectedDate[globals.calendarView].getCurrent();
+        const month = globals.calendarView === 'month' ? globals.selectedDate.month.getCurrent() : 0;
+        const week = globals.selectedDate.week.getCurrent();
         const day = Number($this.attr('data-day'));
 
-        const date = new Date(year, month, day);
+        const date = new Date(year, month, globals.calendarView === 'week' ? (1 + (week - 1) * 7) : day);
         globals.elements.eventsModal.selectedDay.text(date.toDateString());
 
-        const events = globals.eventData[year][month].filter(e => e.date.getDate() === day);
+        let events = [];
+        if (globals.eventData[year] && globals.eventData[year][secondSelector]) {
+          events = globals.eventData[year][secondSelector].filter(e => e.date.getDate() === day);
+        }
+
         globals.elements.eventsModal.events.children().delete();
 
         if (events.length > 0) {
           for (const event of events) {
             globals.elements.eventsModal.events.append(`
-            <p>${event.text} at ${event.date.toLocaleTimeString('en-US')}</p>
-          `);
+              <p>${event.text} at ${event.date.toLocaleTimeString('en-US')}</p>
+            `);
           }
         }
         else {
@@ -220,12 +226,13 @@ const globals = {
       grid = Array.from(Array(days).keys()).map(n => {
         return {
           date: ++n,
-          month: '',
+          month: globals.selectedDate.month.getCurrent(),
           notCurrentMonth: false,
         };
       });
 
       const prevMonth = globals.selectedDate.month.clone().prev().getCurrent();
+      const nextMonth = globals.selectedDate.month.clone().next().getCurrent();
       const prevMonthDays = globals.getTotalDays(globals.selectedDate.year, prevMonth);
 
       const prevMonthTarget = prevMonthDays - weekDayStart;
@@ -234,7 +241,7 @@ const globals = {
       for (let i = prevMonthDays; i > prevMonthTarget; i--) {
         grid.unshift({
           date: i,
-          month: '',
+          month: prevMonth,
           notCurrentMonth: true,
         });
       }
@@ -243,7 +250,7 @@ const globals = {
       for (let i = 1; i < nextMonthTarget; i++) {
         grid.push({
           date: i,
-          month: '',
+          month: nextMonth,
           notCurrentMonth: true,
         });
       }
@@ -320,11 +327,10 @@ const globals = {
    */
   fillEvents: () => {
     if (globals.eventData[globals.selectedDate.year]) {
-      const currentEvents = globals.eventData[globals.selectedDate.year][globals.selectedDate.month.getCurrent()];
+      const currentEvents = globals.eventData[globals.selectedDate.year][globals.selectedDate[globals.calendarView].getCurrent()];
 
       if (currentEvents) {
         for (const event of currentEvents) {
-          console.log(event);
           selectDOM(`[data-day="${event.date.getDate()}"][data-month="${event.date.getMonth()}"]`).append(`
             <a class="event d-block p-1 pl-2 pr-2 mb-1 rounded text-truncate small bg-info text-white" title="${event.text}">${event.text}</a>
           `);

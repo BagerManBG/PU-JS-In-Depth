@@ -17,9 +17,7 @@ window.onload = () => {
     if (dir === 'next') globals.selectedDate.year++;
     else if (dir === 'prev') globals.selectedDate.year--;
 
-    globals.updateCalendar({
-      year: globals.selectedDate.year,
-    });
+    globals.updateCalendar();
   });
 
   /**
@@ -44,10 +42,7 @@ window.onload = () => {
       }
     }
 
-    globals.updateCalendar({
-      month: globals.selectedDate.month,
-      year: globals.selectedDate.year,
-    });
+    globals.updateCalendar();
   });
 
   /**
@@ -72,10 +67,7 @@ window.onload = () => {
       }
     }
 
-    globals.updateCalendar({
-      week: globals.selectedDate.week,
-      year: globals.selectedDate.year,
-    });
+    globals.updateCalendar();
   });
 
   /**
@@ -92,6 +84,40 @@ window.onload = () => {
   globals.elements.viewModeSwitch.on('change', function () {
     const useWeekView = selectDOM(this).get(0).prop('checked');
     globals.calendarView = useWeekView ? 'week' : 'month';
+
+    const eventsObj = loadJSON('./data/events.json');
+
+    if (eventsObj && eventsObj.hasOwnProperty('events')) {
+      const events =  eventsObj.events;
+      events.forEach(e => e.date = new Date(e.timestamp));
+      events.sort((a, b) => a.date > b.date);
+
+      const result = {};
+      for (const event of events) {
+
+        const year = event.date.getFullYear();
+        const month = event.date.getMonth();
+        const week = event.date.getWeek();
+
+        const secondClasificator = useWeekView ? week : month;
+
+        if (!result[year]) {
+          result[year] = {};
+        }
+
+        if (!result[year][secondClasificator]) {
+          result[year][secondClasificator] = [];
+        }
+
+        result[year][secondClasificator].push(event);
+      }
+
+      globals.eventData = result;
+    }
+    else {
+      console.error('Events JSON is in bad format!');
+    }
+
     globals.updateCalendar();
   });
 
@@ -108,6 +134,6 @@ window.onload = () => {
   globals.elements.datePicker.on('blur', function () {
     setTimeout(function () {
       globals.elements.datePicker.prop('focused', false);
-    }, 100);
+    }, 400);
   });
 };
