@@ -1,5 +1,10 @@
 {
   "width": 9,
   "height": 7,
-  "playerFieldHeight": 2
+  "playerFieldHeight": 2,
+  "colors": {
+    "even": "#f3f3f3",
+    "odd": "#696969",
+    "neutral": "#abcdef"
+  }
 }
