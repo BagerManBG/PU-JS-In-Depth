@@ -1,0 +1,23 @@
+{
+  "knight": {
+    "attack": 8,
+    "armor": 3,
+    "health": 15,
+    "range": 1,
+    "speed": 1
+  },
+  "elf": {
+    "attack": 5,
+    "armor": 1,
+    "health": 10,
+    "range": 3,
+    "speed": 3
+  },
+  "dwarf": {
+    "attack": 6,
+    "armor": 2,
+    "health": 12,
+    "range": 2,
+    "speed": 2
+  }
+}

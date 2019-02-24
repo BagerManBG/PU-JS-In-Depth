@@ -1,0 +1,11 @@
+{
+  "rocksNumberRange": {
+    "min": 1,
+    "max": 5
+  },
+  "troopsPerPlayer": {
+    "knight": 2,
+    "elf": 2,
+    "dwarf": 2
+  }
+}
