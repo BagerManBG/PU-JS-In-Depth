@@ -11,6 +11,9 @@
   <h1>Knights / Elves / Dwarfs</h1>
   <h2 class="resolution-error">Resolution below 1024px (tablet, phone) is not supported</h2>
 
+  <div class="player-turn">
+    <p>It's <span class="player-turn--player">Player One</span>'s turn now!</p>
+  </div>
   <div class="container">
     <div class="board" id="board">
       <canvas id="field"></canvas>
@@ -20,6 +23,32 @@
 
     <div class="menu">
       <h2>Menu</h2>
+      <div class="actions">
+        <h3 class="actions--title">Unit Selection</h3>
+        <div class="selection unit-selection">
+          <div class="selection--item unit-selection--unit unit-selection--unit--knight">
+            <img src="./assets/units/knight.png" alt="Knight" id="knight-img"/>
+          </div>
+          <div class="selection--item unit-selection--unit unit-selection--unit--elf">
+            <img src="./assets/units/elf.png" alt="Elf" id="elf-img"/>
+          </div>
+          <div class="selection--item unit-selection--unit unit-selection--unit--dwarf">
+            <img src="./assets/units/dwarf.png" alt="Dwarf" id="dwarf-img"/>
+          </div>
+        </div>
+        <h3 class="actions--title">Action Selection</h3>
+        <div class="selection action-selection">
+          <div class="selection--item action-selection--action action-selection--action--attack">
+            <img src="./assets/actions/attack.png" alt="Attack" id="attack-img"/>
+          </div>
+          <div class="selection--item action-selection--action action-selection--action--move">
+            <img src="./assets/actions/move.png" alt="Move" id="move-img"/>
+          </div>
+          <div class="selection--item action-selection--action action-selection--action--heal">
+            <img src="./assets/actions/heal.png" alt="Heal" id="heal-img"/>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 

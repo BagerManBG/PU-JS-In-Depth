@@ -1,0 +1,5 @@
+globals.actionManager = {
+  createActions: function () {
+
+  },
+};

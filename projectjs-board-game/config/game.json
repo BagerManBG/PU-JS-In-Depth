@@ -7,5 +7,9 @@
     "knight": 2,
     "elf": 2,
     "dwarf": 2
+  },
+  "playerColors": {
+    "playerOne": "#ff0000",
+    "playerTwo": "#0000ff"
   }
 }

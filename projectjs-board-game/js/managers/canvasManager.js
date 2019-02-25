@@ -11,8 +11,8 @@ globals.canvasManager = {
 
     selectDOM('.board')
       .css({
-        width: width,
-        height: height,
+        width: width + 'px',
+        height: height + 'px',
       })
       .children()
       .attr('width', width)
@@ -53,6 +53,7 @@ globals.canvasManager = {
 
     const boxWidth = globals.board.width / globals.settings.tilesCount.x;
     const boxHeight = globals.board.height / globals.settings.tilesCount.y;
+    const playerFieldHeight = globals.settings.board['playerFieldHeight'];
 
     globals.settings.board.boxWidth = boxWidth;
     globals.settings.board.boxHeight = boxHeight;
@@ -64,25 +65,47 @@ globals.canvasManager = {
         const y = boxHeight * i;
         const width = boxWidth * (j + 1);
         const height = boxHeight * (i + 1);
-        const playerFieldHeight = globals.settings.board['playerFieldHeight'];
 
-        let color = '';
+        let bgColor = '';
         let player = null;
         if (i >= playerFieldHeight && i < globals.settings.tilesCount.y - playerFieldHeight) {
-          color = globals.settings.board['colors']['neutral'];
+          bgColor = globals.settings.board['colors']['neutral'];
         }
         else {
           player = i < playerFieldHeight ? globals.players.playerTwo : globals.players.playerOne;
-          color = (j + i) % 2 === 0 ? globals.settings.board['colors']['even'] : globals.settings.board['colors']['odd'];
+          bgColor = (j + i) % 2 === 0 ? globals.settings.board['colors']['even'] : globals.settings.board['colors']['odd'];
         }
 
-        globals.board.creteTile(j, i, player);
+        const tileIndexes = {
+          x: j,
+          y: i,
+        };
 
-        ctx.fillStyle = color;
+        const tileCoords = {
+          x: x,
+          y: y,
+        };
+
+        globals.board.creteTile(tileIndexes, tileCoords, player);
+
+        ctx.fillStyle = bgColor;
         ctx.fillRect(x, y, width, height);
-        ctx.rect(x, y, width, height);
         ctx.stroke();
+
+        ctx.strokeStyle = player ? player.color : '#000000';
+        ctx.strokeRect(x, y, width, height);
       }
     }
+
+    selectDOM('.board canvas').on('click', this.initBoardClick);
   },
+
+  initBoardClick: function (event) {
+    const clientRect = globals.canvases.entities.element.getBoundingClientRect();
+    const x = event.clientX - clientRect.left;
+    const y = event.clientY - clientRect.top;
+
+    const tile = globals.board.getTile(x, y);
+    console.log(tile);
+  }
 };
