@@ -63,8 +63,8 @@ globals.canvasManager = {
 
         const x = boxWidth * j;
         const y = boxHeight * i;
-        const width = boxWidth * (j + 1);
-        const height = boxHeight * (i + 1);
+        const width = boxWidth;
+        const height = boxHeight;
 
         let bgColor = '';
         let player = null;
@@ -92,8 +92,16 @@ globals.canvasManager = {
         ctx.fillRect(x, y, width, height);
         ctx.stroke();
 
-        ctx.strokeStyle = player ? player.color : '#000000';
-        ctx.strokeRect(x, y, width, height);
+        ctx.rect(x, y, width, height);
+        ctx.stroke();
+
+        if (player) {
+          const ctx = globals.canvases.selections.context;
+          ctx.strokeStyle = player.color;
+          ctx.lineWidth = 1.25;
+          ctx.strokeRect(x, y, width, height);
+          console.log(x, y, width, height);
+        }
       }
     }
 
