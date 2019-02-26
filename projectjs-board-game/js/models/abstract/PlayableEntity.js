@@ -30,4 +30,18 @@ class PlayableEntity extends Entity {
 
     this.player.addUnit(this);
   }
+
+  /**
+   * @param stat
+   *
+   * @return {number|boolean}
+   *
+   * Gets a stat from the entity.
+   */
+  getStat (stat) {
+    if (this.stats.hasOwnProperty(stat)) {
+      return this.stats[stat];
+    }
+    return false;
+  }
 }

@@ -52,7 +52,7 @@ class Board {
    * @param x
    * @param y
    *
-   * @return Tile
+   * @return {Tile|boolean}
    *
    * Gets a Tile by coordinates x and y.
    */
@@ -64,6 +64,20 @@ class Board {
         }
       }
     }
+
+    return false;
+  }
+
+  /**
+   * @param x
+   * @param y
+   *
+   * @return {Tile|boolean}
+   *
+   * Gets a Tile by coordinates x and y of the matrix (board).
+   */
+  getTileByMatrixCoords (x, y) {
+    return this.tiles[x] && this.tiles[x][y] ? this.tiles[x][y] : false;
   }
 
   /**
@@ -150,6 +164,52 @@ class Board {
       for (const tile of row) {
         tile.entity = null;
       }
+    }
+  }
+
+  /**
+   * @param tile
+   * @param n
+   * @param endConditionCallback
+   * @param res
+   *
+   * @return [Tile]|boolean
+   *
+   * Gets all adjacent tiles to a given tile. n specifies how many layers deep is the search.
+   */
+  getAdjacentTiles (tile, n = 1, endConditionCallback = null, res = []) {
+    if (!(tile instanceof Tile)) {
+      return false;
+    }
+
+    if (typeof endConditionCallback === 'function' && endConditionCallback(tile)) {
+      return res;
+    }
+
+    const x = tile.indexes.x;
+    const y = tile.indexes.y;
+
+    const tiles = [
+      this.getTileByMatrixCoords(x + 1, y),
+      this.getTileByMatrixCoords(x - 1, y),
+      this.getTileByMatrixCoords(x, y + 1),
+      this.getTileByMatrixCoords(x, y - 1),
+    ];
+
+    res = res.concat(tiles.filter(el => el && res.indexOf(el) < 0));
+
+    if (n - 1 <= 0) {
+      return res;
+    }
+    else {
+      for (let i = 0; i < 4; i++) {
+        if (tiles[i]) {
+          res = res
+            .concat(this.getAdjacentTiles(tiles[i], n - 1, endConditionCallback, res)
+            .filter(el => el && res.indexOf(el) < 0));
+        }
+      }
+      return res;
     }
   }
 }

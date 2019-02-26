@@ -91,6 +91,10 @@ h1, h2 {
   width: 100%;
 }
 
+.container .menu .actions .action-selection .selection--item {
+  outline: 1px solid rgba(0, 0, 0, 0);
+}
+
 .unit-selection--unit {
   position: relative;
 }
@@ -101,6 +105,7 @@ h1, h2 {
   bottom: 5px;
   margin-bottom: 0;
 }
+
 .skip-turn {
   width: 60%;
   margin: 20px 20% 0;
@@ -140,7 +145,7 @@ h1, h2 {
   .resolution-error {
     display: block !important;
   }
-  .container {
+  .container, .player-turn {
     display: none !important;
   }
 }

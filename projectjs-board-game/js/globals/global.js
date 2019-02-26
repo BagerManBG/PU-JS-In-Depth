@@ -53,5 +53,19 @@ const globals = {
    */
   capitalizeFirstLetter: string => {
     return String(string).charAt(0).toUpperCase() + string.slice(1);
-  }
+  },
+
+  /**
+   * @param arr
+   * @param elem
+   *
+   * @return array
+   *
+   * Finds and removes an element from array.
+   */
+  removeFromArray: (arr, elem) => {
+    const index = arr.indexOf(elem);
+    arr.splice(index, 1);
+    return arr;
+  },
 };
