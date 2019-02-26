@@ -17,7 +17,7 @@ globals.rngManager = {
   /**
    * @param n
    *
-   * @return number;
+   * @return {number}
    *
    * Roll "n" number of dice and returns the sum.
    */
@@ -31,6 +31,14 @@ globals.rngManager = {
     return sum;
   },
 
+  /**
+   * @param unit
+   * @param damage
+   *
+   * @return {number}
+   *
+   * Decides weather this attack is a dodge and recalculates damage.
+   */
   dodge: function (unit, damage) {
     const roll = this.roll(this.rngDiceCount);
 
