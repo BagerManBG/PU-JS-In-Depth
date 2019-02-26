@@ -67,6 +67,7 @@ globals.gameManager = {
 
   changeTurn: function () {
     globals.playerTurn = globals.playerTurn.id === globals.players.playerOne.id ? globals.players.playerTwo : globals.players.playerOne;
+    globals.actionManager.removeSelection();
     this.updateTurnMessage();
     this.updateAvailableUnits();
   },

@@ -43,23 +43,30 @@ globals.actionManager = {
     }
   },
 
+  removeSelection: function () {
+    this.selectedTile.selectionColor = null;
+    this.selectedTile = null;
+    this.selectionType = null;
+
+    for (const index in this.actionElements.units) {
+      this.actionElements.units[index].classList.add('inactive');
+    }
+    for (const index in this.actionElements.actions) {
+      this.actionElements.actions[index].classList.add('inactive');
+    }
+
+    globals.board.clearTileSelections();
+    globals.canvasManager.drawSelections();
+
+    return this;
+  },
+
   selectTile: function (tile) {
     if (tile instanceof Tile) {
 
       if (tile === this.selectedTile) {
         tile.selectionColor = null;
-        this.selectedTile = null;
-        this.selectionType = null;
-
-        for (const index in this.actionElements.units) {
-          this.actionElements.units[index].classList.add('inactive');
-        }
-        for (const index in this.actionElements.actions) {
-          this.actionElements.actions[index].classList.add('inactive');
-        }
-
-        globals.board.clearTileSelections();
-        globals.canvasManager.drawSelections();
+        this.removeSelection();
         return false;
       }
 
