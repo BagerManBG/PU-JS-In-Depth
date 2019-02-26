@@ -274,6 +274,9 @@ globals.actionManager = {
         if (damage <= 0) {
           damage = 0;
         }
+        else {
+          damage = globals.rngManager.dodge(tile.entity, damage);
+        }
 
         tile.entity.health -= damage;
 
