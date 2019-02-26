@@ -16,6 +16,11 @@ const globals = {
   entityClasses: {},
 
   /**
+   * Track number of rounds.
+   */
+  roundCount: 1,
+
+  /**
    * @param url
    * @returns {Object|boolean}
    *

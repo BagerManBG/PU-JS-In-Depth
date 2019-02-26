@@ -281,6 +281,11 @@ globals.actionManager = {
    */
   resolveActionAttack: function (tile) {
     if (tile.entity && this.selectedTile && this.selectedTile.entity) {
+      let player = false;
+      if (tile.entity.player) {
+        player = tile.entity.player;
+      }
+
       if (tile.entity instanceof Entity && !(tile.entity instanceof PlayableEntity)) {
         globals.gameManager.killEntity(tile);
       }
@@ -295,16 +300,25 @@ globals.actionManager = {
         }
 
         tile.entity.health -= damage;
-        globals.playerTurn.updateScore(damage);
+        let score = damage;
 
         if (tile.entity.health <= 0) {
+          score += tile.entity.health;
           globals.gameManager.killEntity(tile);
         }
+
+        globals.playerTurn.updateScore(score);
       }
 
       this.removeSelection();
       globals.canvasManager.drawEntities();
-      globals.gameManager.changeTurn();
+
+      if (player && player.unitsLeft === 0) {
+        globals.gameManager.endGame(globals.playerTurn);
+      }
+      else {
+        globals.gameManager.changeTurn();
+      }
     }
   },
 

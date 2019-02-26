@@ -9,7 +9,7 @@
 </head>
 <body>
   <h1>Knights / Elves / Dwarfs</h1>
-  <h2 class="resolution-error">Resolution below 1024px (tablet, phone) is not supported</h2>
+  <h2 class="resolution-error">Resolution below 1100px (small laptop, tablet, phone) is not supported</h2>
 
   <div class="player-turn">
     <p>It's <span class="player-turn--player">Player One</span>'s turn now!</p>
@@ -76,6 +76,25 @@
           </div>
         </div>
         <!--<div class="skip-turn"><a href="#" onclick="globals.gameManager.changeTurn()">Skip Turn</a></div>-->
+      </div>
+    </div>
+
+    <div class="game-finished">
+      <div class="overlay"></div>
+      <div class="game-finished-menu">
+        <h2 class="winner">Player <span class="winner--value"></span> Wins!!!</h2>
+        <h3 class="rounds">Total Rounds: <span class="rounds--value">1</span></h3>
+
+        <div class="score--player score--player--playerOne">Player One's Score: <span class="score--player--playerOne--value">0</span></div>
+        <div class="score--player score--player--playerTwo">Player Two's Score: <span class="score--player--playerTwo--value">0</span></div>
+
+        <h3>Player One's dead units:</h3>
+        <div id="player--1--dead--units"></div>
+
+        <h3>Player Two's dead units:</h3>
+        <div id="player--2--dead--units"></div>
+
+        <div class="play-again"><a href="#" onclick="window.location.reload()">New Game</a></div>
       </div>
     </div>
   </div>

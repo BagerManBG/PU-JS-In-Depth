@@ -37,6 +37,7 @@ globals.gameManager = {
     globals.players.playerOne = new Player(1, 'Player 1', globals.settings.game['playerColors']['playerOne']);
     globals.players.playerTwo = new Player(2, 'Player 2', globals.settings.game['playerColors']['playerTwo']);
     globals.playerTurn = globals.players.playerOne;
+    this.updateAvailableUnits();
     this.updateTurnMessage();
     this.updatePlayerScores();
   },
@@ -98,6 +99,7 @@ globals.gameManager = {
     globals.playerTurn = globals.playerTurn.id === globals.players.playerOne.id ? globals.players.playerTwo : globals.players.playerOne;
     globals.actionManager.removeSelection();
     globals.healedThisRound = false;
+    selectDOM('.rounds--value').text(++globals.roundCount);
     this.updateTurnMessage();
     this.updateAvailableUnits();
   },
@@ -151,10 +153,24 @@ globals.gameManager = {
   killEntity: function (tile) {
     if (tile instanceof Tile && tile.entity) {
       if (tile.entity.player) {
+        tile.entity.player.deadUnits.push(tile.entity);
+        tile.entity.player.unitsLeft--;
         globals.removeFromArray(tile.entity.player.units, tile.entity);
       }
       delete tile.entity;
       tile.entity = null;
+    }
+  },
+
+  /**
+   * End game and show winner
+   */
+  endGame: function (winner) {
+    if (winner instanceof Player) {
+      selectDOM('.winner--value').css('color', winner.color).text(winner.id);
+      selectDOM('#player--1--dead--units').text(globals.players.playerOne.deadUnits.map(u => u.entity_type).join(', '));
+      selectDOM('#player--2--dead--units').text(globals.players.playerTwo.deadUnits.map(u => u.entity_type).join(', '));
+      selectDOM('.game-finished').css('display', 'block');
     }
   },
 };

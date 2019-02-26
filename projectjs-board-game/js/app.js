@@ -3,7 +3,5 @@
  * when the page has finished loading.
  */
 window.onload = () => {
-
   globals.gameManager.initGame();
-  console.log(globals);
 };

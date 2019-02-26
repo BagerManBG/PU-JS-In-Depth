@@ -22,6 +22,7 @@ class Player {
     };
 
     this.units = [];
+    this.deadUnits = [];
     this.unitsLeft = 0;
 
     for (const unitType in this.availableUnits) {
@@ -54,5 +55,6 @@ class Player {
    */
   updateScore (score) {
     this.score += score;
+    globals.gameManager.updatePlayerScores();
   }
 }
