@@ -17,46 +17,75 @@
   <div class="container">
     <div class="board" id="board">
       <canvas id="field"></canvas>
+      <canvas id="field-borders"></canvas>
       <canvas id="selections"></canvas>
       <canvas id="entities"></canvas>
     </div>
 
     <div class="menu">
-      <h2>Menu</h2>
+      <h2><span class="player-turn--player">Player One</span>'s Menu</h2>
       <div class="actions">
         <h3 class="actions--title">Unit Selection</h3>
         <div class="selection unit-selection">
-          <div class="selection--item unit-selection--unit unit-selection--unit--knight">
-            <img src="./assets/units/knight.png" alt="Knight" id="knight-img"/>
+          <div id="knight-img" class="selection--item inactive unit-selection--unit unit-selection--unit--knight">
+            <img src="./assets/units/menu/knight.png" alt="Knight" />
+            <p class="units-left">x<span class="units-left--count units-left--count--knight">2</span></p>
           </div>
-          <div class="selection--item unit-selection--unit unit-selection--unit--elf">
-            <img src="./assets/units/elf.png" alt="Elf" id="elf-img"/>
+          <div id="elf-img" class="selection--item inactive unit-selection--unit unit-selection--unit--elf">
+            <img src="./assets/units/menu/elf.png" alt="Elf" />
+            <p class="units-left">x<span class="units-left--count units-left--count--elf">2</span></p>
           </div>
-          <div class="selection--item unit-selection--unit unit-selection--unit--dwarf">
-            <img src="./assets/units/dwarf.png" alt="Dwarf" id="dwarf-img"/>
+          <div id="dwarf-img" class="selection--item inactive unit-selection--unit unit-selection--unit--dwarf">
+            <img src="./assets/units/menu/dwarf.png" alt="Dwarf" />
+            <p class="units-left">x<span class="units-left--count units-left--count--dwarf">2</span></p>
           </div>
         </div>
         <h3 class="actions--title">Action Selection</h3>
         <div class="selection action-selection">
-          <div class="selection--item action-selection--action action-selection--action--attack">
-            <img src="./assets/actions/attack.png" alt="Attack" id="attack-img"/>
+          <div id="attack-img" class="selection--item inactive action-selection--action action-selection--action--attack">
+            <img src="./assets/actions/attack.png" alt="Attack" />
           </div>
-          <div class="selection--item action-selection--action action-selection--action--move">
-            <img src="./assets/actions/move.png" alt="Move" id="move-img"/>
+          <div id="move-img" class="selection--item inactive action-selection--action action-selection--action--move">
+            <img src="./assets/actions/move.png" alt="Move" />
           </div>
-          <div class="selection--item action-selection--action action-selection--action--heal">
-            <img src="./assets/actions/heal.png" alt="Heal" id="heal-img"/>
+          <div id="heal-img" class="selection--item inactive action-selection--action action-selection--action--heal">
+            <img src="./assets/actions/heal.png" alt="Heal" />
           </div>
         </div>
       </div>
     </div>
   </div>
 
+  <div class="assets-holder" style="display: none;">
+    <img id="asset--rock" src="./assets/misc/rock.png" alt="Rock" />
+
+    <img id="asset--knight--playerOne" src="./assets/units/playerOne/knight.png" alt="Knight" />
+    <img id="asset--elf--playerOne" src="./assets/units/playerOne/elf.png" alt="Elf" />
+    <img id="asset--dwarf--playerOne" src="./assets/units/playerOne/dwarf.png" alt="Dwarf" />
+
+    <img id="asset--knight--playerTwo" src="./assets/units/playerTwo/knight.png" alt="Knight" />
+    <img id="asset--elf--playerTwo" src="./assets/units/playerTwo/elf.png" alt="Elf" />
+    <img id="asset--dwarf--playerTwo" src="./assets/units/playerTwo/dwarf.png" alt="Dwarf" />
+  </div>
+
+  <!-- Globals and Libraries -->
   <script src="libraries/jsDOM/jsDOM.js"></script>
   <script src="js/globals/global.js"></script>
+  <!-- Abstract Entities -->
+  <script src="js/models/abstract/Entity.js"></script>
+  <script src="js/models/abstract/PlayableEntity.js"></script>
+  <!-- NonPlayable Entities -->
+  <script src="js/models/nonPlayable/Rock.js"></script>
+  <!-- Playable Entities -->
+  <script src="js/models/playable/Knight.js"></script>
+  <script src="js/models/playable/Elf.js"></script>
+  <script src="js/models/playable/Dwarf.js"></script>
+  <!-- General Models -->
   <script src="js/models/general/Board.js"></script>
   <script src="js/models/general/Tile.js"></script>
   <script src="js/models/general/Player.js"></script>
+  <!-- Managers -->
+  <script src="js/managers/actionsManager.js"></script>
   <script src="js/managers/gameManager.js"></script>
   <script src="js/managers/canvasManager.js"></script>
   <script src="js/app.js"></script>

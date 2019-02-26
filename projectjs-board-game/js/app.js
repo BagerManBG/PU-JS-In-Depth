@@ -1,10 +1,7 @@
 window.onload = () => {
 
+  globals.actionManager.init();
   globals.canvasManager.initBoard();
-
-  window.onresize = () => {
-    globals.canvasManager.initBoard();
-  };
 
   console.log(globals);
 };

@@ -40,6 +40,10 @@ h1, h2 {
   z-index: 10;
 }
 
+.container .board canvas#field-borders {
+  z-index: 14;
+}
+
 .container .board canvas#selections {
   z-index: 20;
 }
@@ -75,10 +79,27 @@ h1, h2 {
 .container .menu .actions .selection .selection--item {
   width: 30%;
   border: 1px solid #000000;
+  cursor: pointer;
+}
+
+.container .menu .actions .selection .selection--item.inactive {
+  opacity: .6;
+  cursor: default;
 }
 
 .container .menu .actions .selection .selection--item img {
   width: 100%;
+}
+
+.unit-selection--unit {
+  position: relative;
+}
+
+.unit-selection--unit .units-left {
+  position: absolute;
+  left: 5px;
+  bottom: 5px;
+  margin-bottom: 0;
 }
 
 @media all and (max-width: 1024px) {

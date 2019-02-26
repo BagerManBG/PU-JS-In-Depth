@@ -3,7 +3,7 @@
     "min": 1,
     "max": 5
   },
-  "troopsPerPlayer": {
+  "unitsPerPlayer": {
     "knight": 2,
     "elf": 2,
     "dwarf": 2
@@ -11,5 +11,10 @@
   "playerColors": {
     "playerOne": "#ff0000",
     "playerTwo": "#0000ff"
+  },
+  "selectionColors": {
+    "current": "#ef43e1",
+    "move": "#00ff00",
+    "attack": "#ff0000"
   }
 }

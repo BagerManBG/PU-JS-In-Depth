@@ -2,6 +2,7 @@ globals.canvasManager = {
 
   loadCanvases: function () {
     const fieldCanvas = document.getElementById('field');
+    const fieldBordersCanvas = document.getElementById('field-borders');
     const selectionsCanvas = document.getElementById('selections');
     const entitiesCanvas = document.getElementById('entities');
 
@@ -23,6 +24,10 @@ globals.canvasManager = {
         element: fieldCanvas,
         context: fieldCanvas.getContext('2d'),
       },
+      fieldBorders: {
+        element: fieldBordersCanvas,
+        context: fieldBordersCanvas.getContext('2d'),
+      },
       selections: {
         element: selectionsCanvas,
         context: selectionsCanvas.getContext('2d'),
@@ -32,6 +37,12 @@ globals.canvasManager = {
         context: entitiesCanvas.getContext('2d'),
       },
     };
+  },
+
+  clearCanvas: function (context) {
+    if (context) {
+      context.clearRect(0, 0, globals.board.width, globals.board.height);
+    }
   },
 
   initBoard: function () {
@@ -49,7 +60,7 @@ globals.canvasManager = {
     globals.board = new Board(boardWidth, boardHeight, globals.settings.board, globals.canvases.field);
 
     const ctx = globals.board.field.context;
-    ctx.clearRect(0, 0, globals.board.width, globals.board.height);
+    this.clearCanvas(ctx);
 
     const boxWidth = globals.board.width / globals.settings.tilesCount.x;
     const boxHeight = globals.board.height / globals.settings.tilesCount.y;
@@ -96,16 +107,16 @@ globals.canvasManager = {
         ctx.stroke();
 
         if (player) {
-          const ctx = globals.canvases.selections.context;
+          const ctx = globals.canvases.fieldBorders.context;
           ctx.strokeStyle = player.color;
           ctx.lineWidth = 1.25;
           ctx.strokeRect(x, y, width, height);
-          console.log(x, y, width, height);
         }
       }
     }
 
     selectDOM('.board canvas').on('click', this.initBoardClick);
+    globals.gameManager.initRocks();
   },
 
   initBoardClick: function (event) {
@@ -114,6 +125,37 @@ globals.canvasManager = {
     const y = event.clientY - clientRect.top;
 
     const tile = globals.board.getTile(x, y);
-    console.log(tile);
-  }
+    globals.actionManager.selectTile(tile);
+  },
+
+  drawEntities: function () {
+    const tiles = globals.board.getTilesWithEntity();
+
+    const ctx = globals.canvases.entities.context;
+    this.clearCanvas(ctx);
+
+    const offsetX = (globals.settings.board.boxWidth / (globals.settings.tilesCount.x * 2));
+    const offsetY = (globals.settings.board.boxHeight / (globals.settings.tilesCount.y * 2));
+
+    for (const tile of tiles) {
+      ctx.drawImage(tile.entity.image, tile.coords.x + offsetX, tile.coords.y + offsetY, globals.settings.board.boxWidth - offsetX * 2, globals.settings.board.boxHeight - offsetY * 2);
+    }
+  },
+
+  drawSelections: function () {
+    const tiles = globals.board.getTilesWithSelection();
+
+    const ctx = globals.canvases.selections.context;
+    this.clearCanvas(ctx);
+
+    for (const tile of tiles) {
+      const center = tile.getCenter();
+      const r = (globals.settings.board.boxWidth / 2) - (globals.settings.board.boxWidth / globals.settings.tilesCount.x);
+
+      ctx.fillStyle = tile.selectionColor;
+      ctx.beginPath();
+      ctx.arc(center.x, center.y, r, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+  },
 };

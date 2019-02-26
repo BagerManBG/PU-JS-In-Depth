@@ -1,4 +1,11 @@
 const globals = {
+
+  settings: {},
+
+  requiredStats: ['attack', 'armor', 'health', 'range', 'speed'],
+
+  entityClasses: {},
+
   /**
    * @param url
    * @returns {Object|boolean}
@@ -28,4 +35,8 @@ const globals = {
 
     return resultArr;
   },
+
+  capitalizeFirstLetter: string => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
 };
