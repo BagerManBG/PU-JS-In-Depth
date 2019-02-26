@@ -109,8 +109,8 @@ globals.gameManager = {
     const name = entity.constructor.name;
     const hp = entity.getCurrentHealth();
     const maxhp = entity.getStat('health');
-    const attack = entity.getStat('health');
-    const armor = entity.getStat('health');
+    const attack = entity.getStat('attack');
+    const armor = entity.getStat('armor');
 
     selectDOM('.unit-info').css('display', 'block');
     selectDOM('.unit-info--title--value').text(name);
@@ -128,5 +128,20 @@ globals.gameManager = {
     selectDOM('.unit-info--stats--stat.health .unit-info--stats--stat--value').text('');
     selectDOM('.unit-info--stats--stat.attack .unit-info--stats--stat--value').text('');
     selectDOM('.unit-info--stats--stat.armor .unit-info--stats--stat--value').text('');
-  }
+  },
+
+  /**
+   * @param tile
+   *
+   * Deletes entity using it's tile.
+   */
+  killEntity: function (tile) {
+    if (tile instanceof Tile && tile.entity) {
+      if (tile.entity.player) {
+        globals.removeFromArray(tile.entity.player.units, tile.entity);
+      }
+      delete tile.entity;
+      tile.entity = null;
+    }
+  },
 };

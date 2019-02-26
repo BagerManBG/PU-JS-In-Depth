@@ -100,7 +100,7 @@ globals.actionManager = {
         globals.canvasManager.drawSelections();
       }
 
-      if (this.selectedTile.entity instanceof PlayableEntity) {
+      if (this.selectedTile && this.selectedTile.entity instanceof PlayableEntity) {
         globals.gameManager.displayEntityInfo(this.selectedTile.entity);
       }
       else {
@@ -224,7 +224,15 @@ globals.actionManager = {
    * Handles Attack Action.
    */
   handleActionAttack: function () {
-    // Some functionality
+    const isElf = (this.selectedTile.entity.entity_type === 'Elf');
+    const tiles = globals.board.getTilesWithEntityInRange(this.selectedTile, this.selectedTile.entity.getStat('range'), isElf, isElf);
+
+    for (const tile of tiles) {
+      if (tile.entity && !tile.selectionColor && tile.entity.player !== globals.playerTurn) {
+        tile.selectionColor = globals.settings.game['selectionColors']['attack'];
+      }
+    }
+    globals.canvasManager.drawSelections();
   },
 
   /**
@@ -251,10 +259,33 @@ globals.actionManager = {
   },
 
   /**
+   * @param tile
+   *
    * Resolves Attack Action.
    */
-  resolveActionAttack: function () {
-    // Some functionality
+  resolveActionAttack: function (tile) {
+    if (tile.entity && this.selectedTile && this.selectedTile.entity) {
+      if (tile.entity instanceof Entity && !(tile.entity instanceof PlayableEntity)) {
+        globals.gameManager.killEntity(tile);
+      }
+      else {
+        let damage = this.selectedTile.entity.getStat('attack') - tile.entity.getStat('armor');
+
+        if (damage <= 0) {
+          damage = 0;
+        }
+
+        tile.entity.health -= damage;
+
+        if (tile.entity.health <= 0) {
+          globals.gameManager.killEntity(tile);
+        }
+      }
+
+      this.removeSelection();
+      globals.canvasManager.drawEntities();
+      globals.gameManager.changeTurn();
+    }
   },
 
   /**
@@ -265,8 +296,11 @@ globals.actionManager = {
   resolveActionMove: function (tile) {
     if (!tile.entity && this.selectedTile && this.selectedTile.entity) {
       tile.entity = this.selectedTile.entity;
+      this.selectedTile.entity.tile = tile;
+
       this.selectedTile.entity = null;
       this.removeSelection();
+
       globals.canvasManager.drawEntities();
       globals.gameManager.changeTurn();
     }

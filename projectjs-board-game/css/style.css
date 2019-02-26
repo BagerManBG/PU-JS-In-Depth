@@ -151,6 +151,7 @@ h1, h2 {
   border: 1px solid #000000;
   box-shadow: 2px 2px 1px #000000;
   display: none;
+  z-index: 100;
 }
 
 .unit-info .unit-info--title {

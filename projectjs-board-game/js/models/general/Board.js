@@ -212,4 +212,73 @@ class Board {
       return res;
     }
   }
+
+  /**
+   * @param tile
+   * @param range
+   * @param border
+   * @param leap
+   *
+   * @return [Tile]|boolean
+   *
+   * Gets tiles which have entity in range. Search goes only in straight line. If leap is
+   * true, then the algorithm won't stop searching if there is an entity on the way. If border
+   * is true then the algorithm will search only at the maximum range.
+   */
+  getTilesWithEntityInRange (tile, range = 1, border = false, leap = false) {
+    if (!(tile instanceof Tile)) {
+      return false;
+    }
+
+    const x = tile.indexes.x;
+    const y = tile.indexes.y;
+
+    const result = [];
+
+    // Up
+    for (let i = 1; i <= range; i++) {
+      if (!border || i  === range) {
+        const currTile = this.getTileByMatrixCoords(x, y - i);
+        if (currTile.entity) {
+          result.push(currTile);
+          if (!leap) break;
+        }
+      }
+    }
+
+    // Down
+    for (let i = 1; i <= range; i++) {
+      if (!border || i  === range) {
+        const currTile = this.getTileByMatrixCoords(x, y + i);
+        if (currTile.entity) {
+          result.push(currTile);
+          if (!leap) break;
+        }
+      }
+    }
+
+    // Right
+    for (let i = 1; i <= range; i++) {
+      if (!border || i  === range) {
+        const currTile = this.getTileByMatrixCoords(x + i, y);
+        if (currTile.entity) {
+          result.push(currTile);
+          if (!leap) break;
+        }
+      }
+    }
+
+    // Left
+    for (let i = 1; i <= range; i++) {
+      if (!border || i  === range) {
+        const currTile = this.getTileByMatrixCoords(x - i, y);
+        if (currTile.entity) {
+          result.push(currTile);
+          if (!leap) break;
+        }
+      }
+    }
+
+    return result;
+  }
 }

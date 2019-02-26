@@ -156,6 +156,12 @@ globals.canvasManager = {
 
     for (const tile of tiles) {
       ctx.drawImage(tile.entity.image, tile.coords.x + offsetX, tile.coords.y + offsetY, globals.settings.board.boxWidth - offsetX * 2, globals.settings.board.boxHeight - offsetY * 2);
+
+      if (tile.entity instanceof PlayableEntity) {
+        ctx.fillStyle="#ff1243";
+        ctx.fillRect(tile.coords.x + offsetX, tile.coords.y - offsetY / 2, (tile.entity.health / tile.entity.getStat('health')) * globals.settings.board.boxWidth - offsetX * 2, 8);
+        ctx.strokeRect(tile.coords.x + offsetX, tile.coords.y - offsetY / 2, globals.settings.board.boxWidth - offsetX * 2, 8);
+      }
     }
   },
 
