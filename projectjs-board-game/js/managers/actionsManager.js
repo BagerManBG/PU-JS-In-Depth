@@ -44,7 +44,9 @@ globals.actionManager = {
   },
 
   removeSelection: function () {
-    this.selectedTile.selectionColor = null;
+    if (this.selectedTile) {
+      this.selectedTile.selectionColor = null;
+    }
     this.selectedTile = null;
     this.selectionType = null;
 
