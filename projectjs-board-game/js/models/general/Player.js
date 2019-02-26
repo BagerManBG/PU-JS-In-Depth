@@ -54,11 +54,5 @@ class Player {
    */
   updateScore (score) {
     this.score += score;
-
-    selectDOM('.score--player--playerOne').css('color', globals.players.playerOne.color);
-    selectDOM('.score--player--playerTwo').css('color', globals.players.playerTwo.color);
-
-    selectDOM('.score--player--playerOne--value').text(globals.players.playerOne.score);
-    selectDOM('.score--player--playerTwo--value').text(globals.players.playerTwo.score);
   }
 }

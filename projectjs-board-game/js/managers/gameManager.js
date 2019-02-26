@@ -38,6 +38,7 @@ globals.gameManager = {
     globals.players.playerTwo = new Player(2, 'Player 2', globals.settings.game['playerColors']['playerTwo']);
     globals.playerTurn = globals.players.playerOne;
     this.updateTurnMessage();
+    this.updatePlayerScores();
   },
 
   /**
@@ -96,6 +97,7 @@ globals.gameManager = {
   changeTurn: function () {
     globals.playerTurn = globals.playerTurn.id === globals.players.playerOne.id ? globals.players.playerTwo : globals.players.playerOne;
     globals.actionManager.removeSelection();
+    globals.healedThisRound = false;
     this.updateTurnMessage();
     this.updateAvailableUnits();
   },
@@ -128,6 +130,17 @@ globals.gameManager = {
     selectDOM('.unit-info--stats--stat.health .unit-info--stats--stat--value').text('');
     selectDOM('.unit-info--stats--stat.attack .unit-info--stats--stat--value').text('');
     selectDOM('.unit-info--stats--stat.armor .unit-info--stats--stat--value').text('');
+  },
+
+  /**
+   * Updates player scores visually.
+   */
+  updatePlayerScores: function () {
+    selectDOM('.score--player--playerOne').css('color', globals.players.playerOne.color);
+    selectDOM('.score--player--playerTwo').css('color', globals.players.playerTwo.color);
+
+    selectDOM('.score--player--playerOne--value').text(globals.players.playerOne.score);
+    selectDOM('.score--player--playerTwo--value').text(globals.players.playerTwo.score);
   },
 
   /**

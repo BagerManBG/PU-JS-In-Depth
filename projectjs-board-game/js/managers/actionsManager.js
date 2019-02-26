@@ -112,6 +112,67 @@ globals.actionManager = {
   },
 
   /**
+   * Visually disable unit selection.
+   */
+  disableUnits: function () {
+    for (const index in this.actionElements.units) {
+      this.actionElements.units[index].classList.add('inactive');
+    }
+  },
+
+  /**
+   * Visually enable unit selection.
+   */
+  enableUnits: function () {
+    for (const index in this.actionElements.units) {
+      if (globals.playerTurn.availableUnits[index] > 0) {
+        this.actionElements.units[index].classList.remove('inactive');
+      }
+    }
+  },
+
+  /**
+   * Visually disable action selection.
+   */
+  disableActions: function () {
+    for (const index in this.actionElements.actions) {
+      this.actionElements.actions[index].classList.add('inactive');
+      this.actionElements.actions[index].style.outlineColor = null;
+    }
+  },
+
+  /**
+   * Visually enable action selection.
+   */
+  enableActions: function () {
+    for (const index in this.actionElements.actions) {
+      const noHealCondition = (
+        index === 'heal' &&
+        this.selectedTile &&
+        this.selectedTile.entity &&
+        this.selectedTile.entity.health === this.selectedTile.entity.getStat('health'));
+      if (!noHealCondition) {
+        this.actionElements.actions[index].classList.remove('inactive');
+      }
+    }
+  },
+
+  /**
+   * Visually separate selected action from others.
+   */
+  selectAction: function () {
+    for (const index in this.actionElements.actions) {
+      if (this.selectedAction !== index) {
+        this.actionElements.actions[index].style.outlineColor = null;
+      }
+      else {
+        this.actionElements.actions[index].classList.add('selected');
+        this.actionElements.actions[index].style.outlineColor = globals.playerTurn.color;
+      }
+    }
+  },
+
+  /**
    * Handles unit placement on board.
    */
   handleUnitCreation: function () {
@@ -152,7 +213,14 @@ globals.actionManager = {
         const methodName = 'handleAction' + globals.capitalizeFirstLetter(index);
         const conditionThree = globals.actionManager.hasOwnProperty(methodName);
 
-        if (conditionOne && conditionTwo && conditionThree) {
+        const noHealCondition = (
+          index === 'heal' &&
+          globals.actionManager.selectedTile &&
+          globals.actionManager.selectedTile.entity &&
+          globals.actionManager.selectedTile.entity.health === globals.actionManager.selectedTile.entity.getStat('health')
+        );
+
+        if (conditionOne && conditionTwo && conditionThree && !noHealCondition) {
           const color = globals.actionManager.selectedTile.selectionColor;
           globals.board.clearTileSelections();
           globals.actionManager.selectedTile.selectionColor = color;
@@ -163,60 +231,6 @@ globals.actionManager = {
           globals.actionManager[methodName]();
         }
       });
-    }
-  },
-
-  /**
-   * Visually disable unit selection.
-   */
-  disableUnits: function () {
-    for (const index in this.actionElements.units) {
-      this.actionElements.units[index].classList.add('inactive');
-    }
-  },
-
-  /**
-   * Visually enable unit selection.
-   */
-  enableUnits: function () {
-    for (const index in this.actionElements.units) {
-      if (globals.playerTurn.availableUnits[index] > 0) {
-        this.actionElements.units[index].classList.remove('inactive');
-      }
-    }
-  },
-
-  /**
-   * Visually disable action selection.
-   */
-  disableActions: function () {
-    for (const index in this.actionElements.actions) {
-      this.actionElements.actions[index].classList.add('inactive');
-      this.actionElements.actions[index].style.outlineColor = null;
-    }
-  },
-
-  /**
-   * Visually enable action selection.
-   */
-  enableActions: function () {
-    for (const index in this.actionElements.actions) {
-      this.actionElements.actions[index].classList.remove('inactive');
-    }
-  },
-
-  /**
-   * Visually separate selected action from others.
-   */
-  selectAction: function () {
-    for (const index in this.actionElements.actions) {
-      if (this.selectedAction !== index) {
-        this.actionElements.actions[index].style.outlineColor = null;
-      }
-      else {
-        this.actionElements.actions[index].classList.add('selected');
-        this.actionElements.actions[index].style.outlineColor = globals.playerTurn.color;
-      }
     }
   },
 
@@ -255,7 +269,9 @@ globals.actionManager = {
    * Handles Heal Action.
    */
   handleActionHeal: function () {
-    // Some functionality
+    if (this.selectedTile && this.selectedTile.entity) {
+      this.resolveActionHeal(this.selectedTile.entity);
+    }
   },
 
   /**
@@ -311,9 +327,29 @@ globals.actionManager = {
   },
 
   /**
+   * @param entity
+   *
    * Resolves Heal Action.
    */
-  resolveActionHeal: function () {
-    // Some functionality
+  resolveActionHeal: function (entity) {
+    if (entity instanceof PlayableEntity) {
+      const heal = globals.rngManager.roll();
+      entity.health += heal;
+
+      if (entity.health > entity.getStat('health')) {
+        entity.health = entity.getStat('health');
+      }
+
+      this.removeSelection();
+      globals.canvasManager.drawEntities();
+
+      const roll = globals.rngManager.roll();
+      if (roll % 2 === 0 || globals.healedThisRound) {
+        globals.gameManager.changeTurn();
+      }
+      else {
+        globals.healedThisRound = true;
+      }
+    }
   },
 };
