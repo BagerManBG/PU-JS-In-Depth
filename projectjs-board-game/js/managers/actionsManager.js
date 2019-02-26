@@ -1,5 +1,10 @@
+/**
+ *  Manages player enforced actions. (Unit Placement, move, attacks, ...)
+ */
 globals.actionManager = {
-
+  /**
+   * Creates initial logic that actionManager requires in order to work.
+   */
   init: function () {
     this.actionElements = {
       units: {
@@ -43,6 +48,11 @@ globals.actionManager = {
     }
   },
 
+  /**
+   * @returns {globals.actionManager}
+   *
+   * Removes the current selection and clears the canvas for selections.
+   */
   removeSelection: function () {
     if (this.selectedTile) {
       this.selectedTile.selectionColor = null;
@@ -63,6 +73,12 @@ globals.actionManager = {
     return this;
   },
 
+  /**
+   * @param tile
+   * @returns {boolean}
+   *
+   * Selects a tile and decides what to do after. Returns boolean based on operation success or failure.
+   */
   selectTile: function (tile) {
     if (tile instanceof Tile) {
 

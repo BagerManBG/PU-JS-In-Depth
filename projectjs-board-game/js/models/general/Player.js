@@ -1,5 +1,14 @@
+/**
+ * class Player.
+ */
 class Player {
-
+  /**
+   * @param id
+   * @param name
+   * @param color
+   *
+   * Creates a player object.
+   */
   constructor (id, name, color) {
     this.id = id;
     this.name = name;
@@ -14,6 +23,11 @@ class Player {
     this.units = [];
   }
 
+  /**
+   * @param entity
+   *
+   * Ads a unit to the list of units, belonging to the player.
+   */
   addUnit (entity) {
     const type = entity.entity_type.toLowerCase();
 
@@ -22,7 +36,7 @@ class Player {
       this.availableUnits[type] -= 1;
     }
     else {
-      throw Error('Cannot add more units of this type!');
+      throw Error('Cannot units of this type!');
     }
   }
 }

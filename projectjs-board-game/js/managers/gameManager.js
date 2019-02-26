@@ -1,4 +1,10 @@
+/**
+ *  Manager for the game setup and dynamics. Handles game initiations and player operations.
+ */
 globals.gameManager = {
+  /**
+   * Loads settings that manager requires.
+   */
   loadSettings: function () {
     const boardSettings = globals.loadJSON('./config/board.json');
     const gameSettings = globals.loadJSON('./config/game.json');
@@ -23,6 +29,9 @@ globals.gameManager = {
     };
   },
 
+  /**
+   * Creates the two players.
+   */
   createPlayers: function () {
     globals.players = {};
     globals.players.playerOne = new Player(1, 'Player 1', globals.settings.game['playerColors']['playerOne']);
@@ -31,11 +40,21 @@ globals.gameManager = {
     this.updateTurnMessage();
   },
 
+  /**
+   * Initialized the game. This method should be called when the page is fully loaded.
+   */
   initGame: function () {
-    this.loadSettings();
-    this.createPlayers();
+    globals.actionManager.init();
+    globals.gameManager.loadSettings();
+    globals.gameManager.createPlayers();
+    globals.canvasManager.loadCanvasCollection();
+    globals.canvasManager.initBoard();
+    globals.gameManager.initRocks();
   },
 
+  /**
+   * Initializes rocks and places them on the board.
+   */
   initRocks: function () {
     const rocksMin = globals.settings.game['rocksNumberRange']['min'];
     const rocksMax = globals.settings.game['rocksNumberRange']['max'];
@@ -53,18 +72,27 @@ globals.gameManager = {
     }
   },
 
+  /**
+   * Updated the turn messages on the page with the current player's name.
+   */
   updateTurnMessage: function () {
     selectDOM('.player-turn--player')
       .css('color', globals.playerTurn.color)
       .text(globals.playerTurn.name);
   },
 
+  /**
+   * Updates the available units left indication on the menu.
+   */
   updateAvailableUnits: function () {
     for (const unit in globals.playerTurn.availableUnits) {
       selectDOM('.units-left--count--' + unit).text(globals.playerTurn.availableUnits[unit]);
     }
   },
 
+  /**
+   * Changes the turn.
+   */
   changeTurn: function () {
     globals.playerTurn = globals.playerTurn.id === globals.players.playerOne.id ? globals.players.playerTwo : globals.players.playerOne;
     globals.actionManager.removeSelection();

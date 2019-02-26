@@ -1,9 +1,18 @@
 const globals = {
 
+  /**
+   * Contains all the settings for the app.
+   */
   settings: {},
 
+  /**
+   * List of required stats for playable entities.
+   */
   requiredStats: ['attack', 'armor', 'health', 'range', 'speed'],
 
+  /**
+   * Contains all classes for entities, so that they can be called dynamically.
+   */
   entityClasses: {},
 
   /**
@@ -36,7 +45,13 @@ const globals = {
     return resultArr;
   },
 
+  /**
+   * @param string
+   * @returns {string}
+   *
+   * Takes a string and returns it with first letter capitalized.
+   */
   capitalizeFirstLetter: string => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+    return String(string).charAt(0).toUpperCase() + string.slice(1);
   }
 };

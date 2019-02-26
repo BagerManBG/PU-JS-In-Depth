@@ -1,6 +1,11 @@
+/**
+ * Manages all the canvasCollection. Responsible for drawing and clearing on the canvasCollection.
+ */
 globals.canvasManager = {
-
-  loadCanvases: function () {
+  /**
+   * Loads the canvasCollection that the game uses with all the necessary canvases.
+   */
+  loadCanvasCollection: function () {
     const fieldCanvas = document.getElementById('field');
     const fieldBordersCanvas = document.getElementById('field-borders');
     const selectionsCanvas = document.getElementById('selections');
@@ -19,7 +24,7 @@ globals.canvasManager = {
       .attr('width', width)
       .attr('height', height);
 
-    globals.canvases = {
+    globals.canvasCollection = {
       field: {
         element: fieldCanvas,
         context: fieldCanvas.getContext('2d'),
@@ -39,25 +44,30 @@ globals.canvasManager = {
     };
   },
 
+  /**
+   * @param context
+   *
+   * Clears the selected canvas, using his context.
+   */
   clearCanvas: function (context) {
     if (context) {
       context.clearRect(0, 0, globals.board.width, globals.board.height);
     }
   },
 
+  /**
+   * Creates the board and draws the tiles based on configuration. (One time action only)
+   */
   initBoard: function () {
-    globals.gameManager.initGame();
-    this.loadCanvases();
-
     globals.settings.tilesCount = {
       x: globals.settings.board.width,
       y: globals.settings.board.height,
     };
 
-    const boardWidth = globals.canvases.field.element.width;
-    const boardHeight = globals.canvases.field.element.height;
+    const boardWidth = globals.canvasCollection.field.element.width;
+    const boardHeight = globals.canvasCollection.field.element.height;
 
-    globals.board = new Board(boardWidth, boardHeight, globals.settings.board, globals.canvases.field);
+    globals.board = new Board(boardWidth, boardHeight, globals.settings.board, globals.canvasCollection.field);
 
     const ctx = globals.board.field.context;
     this.clearCanvas(ctx);
@@ -107,7 +117,7 @@ globals.canvasManager = {
         ctx.stroke();
 
         if (player) {
-          const ctx = globals.canvases.fieldBorders.context;
+          const ctx = globals.canvasCollection.fieldBorders.context;
           ctx.strokeStyle = player.color;
           ctx.lineWidth = 1.25;
           ctx.strokeRect(x, y, width, height);
@@ -116,11 +126,15 @@ globals.canvasManager = {
     }
 
     selectDOM('.board canvas').on('click', this.initBoardClick);
-    globals.gameManager.initRocks();
   },
 
+  /**
+   * @param event
+   *
+   * Handles clicks on the canvas and determines which tile was clicked.
+   */
   initBoardClick: function (event) {
-    const clientRect = globals.canvases.entities.element.getBoundingClientRect();
+    const clientRect = globals.canvasCollection.entities.element.getBoundingClientRect();
     const x = event.clientX - clientRect.left;
     const y = event.clientY - clientRect.top;
 
@@ -128,10 +142,13 @@ globals.canvasManager = {
     globals.actionManager.selectTile(tile);
   },
 
+  /**
+   * Draws all entities which are in tiles.
+   */
   drawEntities: function () {
     const tiles = globals.board.getTilesWithEntity();
 
-    const ctx = globals.canvases.entities.context;
+    const ctx = globals.canvasCollection.entities.context;
     this.clearCanvas(ctx);
 
     const offsetX = (globals.settings.board.boxWidth / (globals.settings.tilesCount.x * 2));
@@ -142,10 +159,13 @@ globals.canvasManager = {
     }
   },
 
+  /**
+   * Draws all selections which are in tiles.
+   */
   drawSelections: function () {
     const tiles = globals.board.getTilesWithSelection();
 
-    const ctx = globals.canvases.selections.context;
+    const ctx = globals.canvasCollection.selections.context;
     this.clearCanvas(ctx);
 
     for (const tile of tiles) {

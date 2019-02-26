@@ -1,5 +1,18 @@
+/**
+ * PlayableEntity abstract class.
+ */
 class PlayableEntity extends Entity {
-
+  /**
+   * @param tile
+   * @param image
+   * @param stats
+   * @param player
+   *
+   * @throws Error
+   *
+   * Creates a PlayableEntity. Throws error if someone tries to create an object out of this class directly,
+   * or if a stat is missing in the configuration.
+   */
   constructor (tile, image, stats, player) {
     super(tile, image);
     this.stats = stats;
