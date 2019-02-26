@@ -168,6 +168,21 @@ h1, h2 {
   text-align: center;
 }
 
+.score {
+  position: fixed;
+  bottom: 10px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.score .score--player {
+  padding: 5px 20px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
 @media all and (max-width: 1024px) {
   .resolution-error {
     display: block !important;

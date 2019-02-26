@@ -13,6 +13,7 @@ class Player {
     this.id = id;
     this.name = name;
     this.color = color;
+    this.score = 0;
 
     this.availableUnits = {
       knight: globals.settings.game['unitsPerPlayer']['knight'],
@@ -21,6 +22,11 @@ class Player {
     };
 
     this.units = [];
+    this.unitsLeft = 0;
+
+    for (const unitType in this.availableUnits) {
+      this.unitsLeft += this.availableUnits[unitType];
+    }
   }
 
   /**
@@ -38,5 +44,21 @@ class Player {
     else {
       throw Error('Cannot units of this type!');
     }
+  }
+
+  /**
+   * @param score
+   *
+   * Update score. Adds the parameter value to the total score. It doesn't replace the value.
+   * This is not a setter.
+   */
+  updateScore (score) {
+    this.score += score;
+
+    selectDOM('.score--player--playerOne').css('color', globals.players.playerOne.color);
+    selectDOM('.score--player--playerTwo').css('color', globals.players.playerTwo.color);
+
+    selectDOM('.score--player--playerOne--value').text(globals.players.playerOne.score);
+    selectDOM('.score--player--playerTwo--value').text(globals.players.playerTwo.score);
   }
 }

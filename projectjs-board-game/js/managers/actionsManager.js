@@ -279,6 +279,7 @@ globals.actionManager = {
         }
 
         tile.entity.health -= damage;
+        globals.playerTurn.updateScore(damage);
 
         if (tile.entity.health <= 0) {
           globals.gameManager.killEntity(tile);
