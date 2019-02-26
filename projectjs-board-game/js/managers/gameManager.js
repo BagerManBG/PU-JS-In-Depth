@@ -99,4 +99,34 @@ globals.gameManager = {
     this.updateTurnMessage();
     this.updateAvailableUnits();
   },
+
+  /**
+   * @param entity
+   *
+   * Visualises entity data on menu.
+   */
+  displayEntityInfo: function (entity) {
+    const name = entity.constructor.name;
+    const hp = entity.getCurrentHealth();
+    const maxhp = entity.getStat('health');
+    const attack = entity.getStat('health');
+    const armor = entity.getStat('health');
+
+    selectDOM('.unit-info').css('display', 'block');
+    selectDOM('.unit-info--title--value').text(name);
+    selectDOM('.unit-info--stats--stat.health .unit-info--stats--stat--value').text(hp + '/' + maxhp);
+    selectDOM('.unit-info--stats--stat.attack .unit-info--stats--stat--value').text(attack);
+    selectDOM('.unit-info--stats--stat.armor .unit-info--stats--stat--value').text(armor);
+  },
+
+  /**
+   * Hides entity info tab.
+   */
+  hideEntityInfo: function () {
+    selectDOM('.unit-info').css('display', 'none');
+    selectDOM('.unit-info--title--value').text('');
+    selectDOM('.unit-info--stats--stat.health .unit-info--stats--stat--value').text('');
+    selectDOM('.unit-info--stats--stat.attack .unit-info--stats--stat--value').text('');
+    selectDOM('.unit-info--stats--stat.armor .unit-info--stats--stat--value').text('');
+  }
 };

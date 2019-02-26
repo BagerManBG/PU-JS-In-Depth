@@ -39,6 +39,8 @@ globals.actionManager = {
     this.disableUnits();
     this.disableActions();
 
+    globals.gameManager.hideEntityInfo();
+
     globals.board.clearTileSelections();
     globals.canvasManager.drawSelections();
 
@@ -96,6 +98,13 @@ globals.actionManager = {
 
         tile.selectionColor = globals.settings.game['selectionColors']['current'];
         globals.canvasManager.drawSelections();
+      }
+
+      if (this.selectedTile.entity instanceof PlayableEntity) {
+        globals.gameManager.displayEntityInfo(this.selectedTile.entity);
+      }
+      else {
+        globals.gameManager.hideEntityInfo();
       }
 
       return true;

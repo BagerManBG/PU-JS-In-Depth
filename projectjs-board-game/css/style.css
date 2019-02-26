@@ -8,7 +8,7 @@ h1, h2 {
 
 .player-turn {
   width: 80%;
-  margin: 80px 10% 0;
+  margin: 120px 10% 0;
   font-size: 32px;
   font-weight: bold;
 }
@@ -21,7 +21,7 @@ h1, h2 {
 
 .container .board {
   width: 60%;
-  height: 30vw;
+  height: 32vw;
   border: 1px solid #000000;
   position: relative;
   background-color: #efefef;
@@ -55,7 +55,7 @@ h1, h2 {
 .container .menu {
   margin-left: 10%;
   width: 30%;
-  height: 30vw;
+  height: 32vw;
   border: 1px solid #000000;
   background-color: #efefef;
 }
@@ -139,6 +139,32 @@ h1, h2 {
 .skip-turn a:active {
   position: relative;
   top: 1px;
+}
+
+.unit-info {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  width: 200px;
+  padding: 5px 10px 15px;
+  background-color: #efefef;
+  border: 1px solid #000000;
+  box-shadow: 2px 2px 1px #000000;
+  display: none;
+}
+
+.unit-info .unit-info--title {
+  text-align: center;
+}
+
+.unit-info .unit-info--stats {
+  display: flex;
+  justify-content: space-between;
+}
+
+.unit-info .unit-info--stats--stat--value,
+.unit-info .unit-info--stats--stat--head {
+  text-align: center;
 }
 
 @media all and (max-width: 1024px) {

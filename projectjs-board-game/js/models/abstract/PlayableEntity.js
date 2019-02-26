@@ -16,6 +16,7 @@ class PlayableEntity extends Entity {
   constructor (tile, image, stats, player) {
     super(tile, image);
     this.stats = stats;
+    this.health = stats['health'];
     this.player = player;
 
     if (this.constructor === PlayableEntity) {
@@ -43,5 +44,14 @@ class PlayableEntity extends Entity {
       return this.stats[stat];
     }
     return false;
+  }
+
+  /**
+   * @return number
+   *
+   * Returns entity's current health.
+   */
+  getCurrentHealth () {
+    return this.health;
   }
 }
