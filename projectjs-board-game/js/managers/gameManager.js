@@ -46,6 +46,9 @@ globals.gameManager = {
    * Initialized the game. This method should be called when the page is fully loaded.
    */
   initGame: function () {
+    globals.initialState = Object.assign({}, globals);
+
+    globals.canvasManager.initBoardClick();
     globals.actionManager.init();
     globals.gameManager.loadSettings();
     globals.gameManager.createPlayers();
@@ -168,9 +171,24 @@ globals.gameManager = {
   endGame: function (winner) {
     if (winner instanceof Player) {
       selectDOM('.winner--value').css('color', winner.color).text(winner.id);
-      selectDOM('#player--1--dead--units').text(globals.players.playerOne.deadUnits.map(u => u.entity_type).join(', '));
-      selectDOM('#player--2--dead--units').text(globals.players.playerTwo.deadUnits.map(u => u.entity_type).join(', '));
+      selectDOM('#player--1--dead--units').text(globals.players.playerOne.deadUnits.map(u => u.entity_type).join(', ') || 'No dead units!');
+      selectDOM('#player--2--dead--units').text(globals.players.playerTwo.deadUnits.map(u => u.entity_type).join(', ') || 'No dead units!');
       selectDOM('.game-finished').css('display', 'block');
     }
   },
+
+  /**
+   * Restarts the game. (equivalent result to page restart)
+   */
+  restartGame: function () {
+    globals = globals.initialState;
+
+    selectDOM('.winner--value').css('color', '#000000').text('');
+    selectDOM('#player--1--dead--units').text('');
+    selectDOM('#player--2--dead--units').text('');
+    selectDOM('.game-finished').css('display', 'none');
+
+    this.initGame();
+
+  }
 };

@@ -12,36 +12,40 @@ globals.canvasManager = {
     const entitiesCanvas = document.getElementById('entities');
 
     const boardElement = document.getElementById('board');
-    const width = boardElement.scrollWidth;
-    const height = boardElement.scrollHeight;
+    const bRect = boardElement.getBoundingClientRect();
+
+    const width = bRect.width;
+    const height = bRect.height;
 
     selectDOM('.board')
+      .children()
       .css({
         width: width + 'px',
         height: height + 'px',
       })
-      .children()
       .attr('width', width)
       .attr('height', height);
 
-    globals.canvasCollection = {
-      field: {
-        element: fieldCanvas,
-        context: fieldCanvas.getContext('2d'),
-      },
-      fieldBorders: {
-        element: fieldBordersCanvas,
-        context: fieldBordersCanvas.getContext('2d'),
-      },
-      selections: {
-        element: selectionsCanvas,
-        context: selectionsCanvas.getContext('2d'),
-      },
-      entities: {
-        element: entitiesCanvas,
-        context: entitiesCanvas.getContext('2d'),
-      },
-    };
+    if (!globals.hasOwnProperty('canvasCollection')) {
+      globals.canvasCollection = {
+        field: {
+          element: fieldCanvas,
+          context: fieldCanvas.getContext('2d'),
+        },
+        fieldBorders: {
+          element: fieldBordersCanvas,
+          context: fieldBordersCanvas.getContext('2d'),
+        },
+        selections: {
+          element: selectionsCanvas,
+          context: selectionsCanvas.getContext('2d'),
+        },
+        entities: {
+          element: entitiesCanvas,
+          context: entitiesCanvas.getContext('2d'),
+        },
+      };
+    }
   },
 
   /**
@@ -67,10 +71,15 @@ globals.canvasManager = {
     const boardWidth = globals.canvasCollection.field.element.width;
     const boardHeight = globals.canvasCollection.field.element.height;
 
-    globals.board = new Board(boardWidth, boardHeight, globals.settings.board, globals.canvasCollection.field);
+    if (!(globals.hasOwnProperty('board') && globals.board instanceof Board)) {
+      globals.board = new Board(boardWidth, boardHeight, globals.settings.board, globals.canvasCollection.field);
+    }
+    else {
+      globals.board.width = boardWidth;
+      globals.board.height = boardHeight;
+    }
 
     const ctx = globals.board.field.context;
-    this.clearCanvas(ctx);
 
     const boxWidth = globals.board.width / globals.settings.tilesCount.x;
     const boxHeight = globals.board.height / globals.settings.tilesCount.y;
@@ -107,7 +116,13 @@ globals.canvasManager = {
           y: y,
         };
 
-        globals.board.creteTile(tileIndexes, tileCoords, player);
+        if (globals.board.getTilesLenght() <= (i * globals.settings.tilesCount.x) + j) {
+          globals.board.createTile(tileIndexes, tileCoords, player);
+        }
+        else {
+          const tile = globals.board.getTileByMatrixCoords(j, i);
+          tile.coords = tileCoords;
+        }
 
         ctx.fillStyle = bgColor;
         ctx.fillRect(x, y, width, height);
@@ -124,22 +139,23 @@ globals.canvasManager = {
         }
       }
     }
-
-    selectDOM('.board canvas').on('click', this.initBoardClick);
   },
 
   /**
-   * @param event
-   *
    * Handles clicks on the canvas and determines which tile was clicked.
    */
-  initBoardClick: function (event) {
-    const clientRect = globals.canvasCollection.entities.element.getBoundingClientRect();
-    const x = event.clientX - clientRect.left;
-    const y = event.clientY - clientRect.top;
+  initBoardClick: function () {
+    const clickHandler = function (event) {
+      const clientRect = globals.canvasCollection.entities.element.getBoundingClientRect();
+      const x = event.clientX - clientRect.left;
+      const y = event.clientY - clientRect.top;
 
-    const tile = globals.board.getTile(x, y);
-    globals.actionManager.selectTile(tile);
+      const tile = globals.board.getTile(x, y);
+      globals.actionManager.selectTile(tile);
+    };
+
+    selectDOM('.board canvas').restartElements();
+    selectDOM('.board canvas').on('click', clickHandler);
   },
 
   /**
@@ -183,5 +199,15 @@ globals.canvasManager = {
       ctx.arc(center.x, center.y, r, 0, 2 * Math.PI);
       ctx.fill();
     }
+  },
+
+  /**
+   * Redraws the board. No elements change during that process. Method is used when resizing window.
+   */
+  redrawBoard: function () {
+    this.loadCanvasCollection();
+    this.initBoard();
+    this.drawSelections();
+    this.drawEntities();
   },
 };

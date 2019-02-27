@@ -357,6 +357,18 @@ class jsDOM {
     this.elements.forEach(el => el.addEventListener.call(el, event, callback));
     return this;
   }
+
+  /**
+   * Unbinds all events of the selected elements.
+   * Unbinds children's events as well. Method achieves this by
+   * recreating the element, using a copying technique.
+   */
+  restartElements() {
+    this.elements.map(el => {
+      const newElem = el.cloneNode(true);
+      el.parentNode.replaceChild(newElem, el);
+    });
+  }
 }
 
 const selectDOM = selector => new jsDOM(selector);

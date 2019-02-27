@@ -26,7 +26,7 @@ class Board {
    *
    * Creates a Tile object on the board.
    */
-  creteTile (indexes, coords, player, entity) {
+  createTile (indexes, coords, player, entity) {
     if (!Array.isArray(this.tiles[indexes.x])) {
       this.tiles[indexes.x] = [];
     }
@@ -46,6 +46,23 @@ class Board {
       this.tiles[indexes.x][indexes.y].player = player;
       this.tiles[indexes.x][indexes.y].entity = entity;
     }
+  }
+
+  /**
+   * @return {number}
+   *
+   * Returns the number of tiles on the board.
+   */
+  getTilesLenght () {
+    let count = 0;
+
+    for (const row of this.tiles) {
+      for (const tile of row) {
+        count++;
+      }
+    }
+
+    return count;
   }
 
   /**

@@ -4,4 +4,8 @@
  */
 window.onload = () => {
   globals.gameManager.initGame();
+
+  window.onresize = () => {
+    globals.canvasManager.redrawBoard();
+  };
 };

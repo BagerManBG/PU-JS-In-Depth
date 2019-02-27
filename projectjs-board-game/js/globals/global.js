@@ -1,4 +1,4 @@
-const globals = {
+let globals = {
 
   /**
    * Contains all the settings for the app.

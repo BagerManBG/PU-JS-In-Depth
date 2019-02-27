@@ -168,21 +168,22 @@ h1, h2 {
   text-align: center;
 }
 
-.score {
+.score .score--player {
   position: fixed;
   bottom: 10px;
-  left: 0;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
   z-index: 90;
-}
-
-.score .score--player {
   padding: 5px 20px;
   font-size: 24px;
   font-weight: bold;
   text-shadow: 1px 1px 1px #000000;
+}
+
+.score--player--playerOne {
+  left: 0;
+}
+
+.score--player--playerTwo {
+  right: 0;
 }
 
 .game-finished {
