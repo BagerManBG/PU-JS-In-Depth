@@ -1,7 +1,7 @@
 class Router {
   constructor () {
     this.routes = {};
-    this.defaultRoute = 'home';
+    this.defaultRoute = '/home';
     this.searchParams = new URLSearchParams(window.location.search);
   }
 
@@ -9,10 +9,11 @@ class Router {
     this.defaultRoute = String(route);
   }
 
-  register (route, callback, overwrite = false) {
+  register (route, title, callback, overwrite = false) {
     if (!this.routes.hasOwnProperty(route) || overwrite) {
       this.routes[route] = {
         path: route,
+        title: title,
         callback: callback,
       };
       return true;
@@ -24,6 +25,7 @@ class Router {
 
   match () {
     const route = window.location.hash.slice(1);
+    globals.elements.content.html('');
 
     if (this.routes.hasOwnProperty(route) && typeof this.routes[route].callback === 'function') {
       this.routes[route].callback.call(this, this.getQueryParams());

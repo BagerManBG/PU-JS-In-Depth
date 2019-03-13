@@ -1,4 +1,4 @@
-globals.Router.register('matches', function (searchParams) {
+globals.Router.register('/matches', 'Matches', function (searchParams) {
   globals.elements.title.text('Matches');
 
   const filterByLocality = function (data, locality, country_code) {
@@ -106,7 +106,7 @@ globals.Router.register('matches', function (searchParams) {
     for (const match of data) {
       markup += (`
           <tr>
-            <td>${match['venue']} ${match['location']}</td>
+            <td>${match['venue']}, ${match['location']}</td>
             <td>${globals.formatDate(match['datetime']) || 'Unknown'}</td>
             <td>${match['home_team_country']} vs ${match['away_team_country']}</td>
             <td>${match['home_team_statistics']['on_target']} - ${match['away_team_statistics']['on_target']}</td>
