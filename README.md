@@ -3,13 +3,13 @@
 ## Task Links
 
 1. __uni-js-hello-world__ / __projectjs-event-organizer__
-    * Task - http://js.mihail-petrov.me/projects/project_1.pdf
+    * Task - https://github.com/BagerManBG/PU-JS-In-Depth/blob/master/tasks/project_1.pdf
 1. __projectjs-dom-calendar__
-    * Task - http://js.mihail-petrov.me/projects/project_2.pdf
+    * Task - https://github.com/BagerManBG/PU-JS-In-Depth/blob/master/tasks/project_2.pdf
 1. __projectjs-board-game__
-    * Task - http://js.mihail-petrov.me/projects/project_3.pdf
+    * Task - https://github.com/BagerManBG/PU-JS-In-Depth/blob/master/tasks/project_3.pdf
 1. __projectjs-fifa-game__
-    * Task - http://js.mihail-petrov.me/projects/project_4.pdf
+    * Task - https://github.com/BagerManBG/PU-JS-In-Depth/blob/master/tasks/project_4.pdf
 
 ## Running the Projects
 
