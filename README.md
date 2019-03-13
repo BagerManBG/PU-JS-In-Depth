@@ -1,5 +1,7 @@
 # PU-JS-In-Depth
 
+This is a repo for a university subject called "JavaScript in depth". Here are located all tasks given to me and their corresponding solutions.
+
 ## Task Links
 
 1. __uni-js-hello-world__ / __projectjs-event-organizer__
