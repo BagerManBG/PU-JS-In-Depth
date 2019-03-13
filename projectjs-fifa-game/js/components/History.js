@@ -14,19 +14,20 @@ globals.Router.register('/history', 'History', function (searchParams) {
           <thead>
             <tr class="d-flex">
               <th class="col-2">Action Order Number</th>
-              <th class="col-6">Path Visited</th>        
-              <th class="col-6">Date / Time</th>                          
+              <th class="col-5">Path Visited</th>
+              <th class="col-5">Date / Time</th>
             </tr>
           </thead>
           <tbody>
       `);
 
     for (const index in data) {
+      const url = new URL(window.location.origin + data[index].path);
       markup += (`
           <tr class="d-flex">
             <td class="col-2">#${Number(index) + 1}</td>
-            <td class="col-6"><a href="${data[index].path}">${data[index].path}</a></td>
-            <td class="col-6">${data[index].date}</td>
+            <td class="col-5"><a class="history-link" data-route="${url.hash.slice(1)}" data-path="${url.pathname + url.search}" href="${data[index].path}">${data[index].path}</a></td>
+            <td class="col-5">${data[index].date}</td>
           </tr>
         `);
     }
@@ -38,6 +39,12 @@ globals.Router.register('/history', 'History', function (searchParams) {
 
     globals.Router.render ({
       markup: markup,
+      callback: function () {
+        selectDOM('a.history-link').on('click', function (e) {
+          e.preventDefault();
+          globals.Router.changeRoute(e.target.getAttribute('data-route'), e.target.getAttribute('data-path'));
+        });
+      }
     });
   };
 
