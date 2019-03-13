@@ -1,4 +1,10 @@
+/**
+ * Class Router. Used for navigating between different components (pages).
+ */
 class Router {
+  /**
+   * Router constructor.
+   */
   constructor () {
     this.routes = {};
     this.currentRoute = null;
@@ -6,10 +12,21 @@ class Router {
     this.searchParams = new URLSearchParams(window.location.search);
   }
 
+  /**
+   * @param route
+   *
+   * Changes the default route path. Default path is used if user enters an invalid path.
+   */
   setDefaultRoute (route) {
     this.defaultRoute = String(route);
   }
 
+  /**
+   * @param route
+   * @param path
+   *
+   * Changes the page and re-renders the component.
+   */
   changeRoute(route = this.defaultRoute, path = null) {
     if (this.routes.hasOwnProperty(route)) {
       window.history.pushState({}, this.routes[route].title, (path || '/') + '#' + this.routes[route].path);
@@ -18,6 +35,15 @@ class Router {
     }
   }
 
+  /**
+   * @param route
+   * @param title
+   * @param callback
+   * @param overwrite
+   * @return {boolean}
+   *
+   * Registers a new route. Overwrite needs to be true in order to be able to overwrite an existing route.
+   */
   register (route, title, callback, overwrite = false) {
     if (!this.routes.hasOwnProperty(route) || overwrite) {
       this.routes[route] = {
@@ -32,6 +58,9 @@ class Router {
     return false;
   }
 
+  /**
+   * Renders navigation section on the page.
+   */
   renderNavigation () {
     globals.elements.navigation.html('');
 
@@ -49,6 +78,11 @@ class Router {
     });
   }
 
+  /**
+   * @param render
+   *
+   * Renders a page using a render object.
+   */
   render (render) {
     globals.elements.title.text(this.currentRoute.title);
     this.renderNavigation();
@@ -56,6 +90,11 @@ class Router {
     if (render.callback && typeof render.callback === 'function') render.callback();
   }
 
+  /**
+   * @return {boolean}
+   *
+   * Matches the current route with all stored routes and if it finds a match it visualizes the corresponding page.
+   */
   match () {
     const route = window.location.hash.slice(1);
     if (this.routes.hasOwnProperty(route) && typeof this.routes[route].callback === 'function') {
@@ -75,6 +114,9 @@ class Router {
     return false;
   }
 
+  /**
+   * Gets all the query parameters from the url.
+   */
   getQueryParams () {
     const paramsResult = {};
 
@@ -85,6 +127,11 @@ class Router {
     return paramsResult;
   }
 
+  /**
+   * @param paramsObj
+   *
+   * Used to set single or multiple query parameters.
+   */
   setQueryParams (paramsObj) {
     for (const key in paramsObj) {
       if (paramsObj[key]) {

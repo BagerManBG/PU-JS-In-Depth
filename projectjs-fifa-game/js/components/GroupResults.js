@@ -1,3 +1,6 @@
+/**
+ * Registers a route for team group results. Visualizes data about countries sorted by their group code.
+ */
 globals.Router.register('/teams/group-results', 'Group Results', function (searchParams) {
   const build = (data = null) => {
     let markup = '';

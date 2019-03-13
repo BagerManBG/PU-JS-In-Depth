@@ -1,3 +1,10 @@
+/**
+ * Registers a route for matches data. Visualizes data about matches with location, date, teams, result.
+ * This data can be filtered using the form at the top of the page. Country is to display statistics only for one
+ * specific country. The other fields are available for use only if a specific country is selected. Locality lets the
+ * user select weather he wants to get data only when the selected country was the home or the away team in the match.
+ * The outcome control lets him choose to display only wins, looses or draws for the selected country.
+ */
 globals.Router.register('/matches', 'Matches', function (searchParams) {
   const filterByLocality = function (data, locality, country_code) {
     return data.filter(d => d[locality + '_team']['code'] === country_code);

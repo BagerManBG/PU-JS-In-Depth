@@ -1,3 +1,7 @@
+/**
+ * Registers a route for site visitations history. Visualizes each action taken by the user.
+ * It uses cookies for storage.
+ */
 globals.Router.register('/history', 'History', function (searchParams) {
   const build = (data = null) => {
     let markup = '';

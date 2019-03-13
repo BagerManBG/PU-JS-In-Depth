@@ -1,3 +1,6 @@
+/**
+ * Registers a route for teams data. Visualizes data about each team available in the API.
+ */
 globals.Router.register('/teams', 'Teams', function (searchParams) {
   const build = () => {
     let markup = '';

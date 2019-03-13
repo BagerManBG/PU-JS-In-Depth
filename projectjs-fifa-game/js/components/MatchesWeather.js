@@ -1,3 +1,7 @@
+/**
+ * Registers a route for weather data on matches. All matches and all available data for the weather at the
+ * moment of the event.
+ */
 globals.Router.register('/matches/weather', 'Matches Weather', function (searchParams) {
   const build = (data = null) => {
     let markup = '';
