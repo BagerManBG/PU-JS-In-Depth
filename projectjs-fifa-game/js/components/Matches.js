@@ -7,7 +7,6 @@ globals.Router.register('/matches', 'Matches', function (searchParams) {
     return data.filter(d => {
       switch (outcome) {
         case 'win':
-          console.log((d['winner_code'] === country_code && d['winner_code'] !== 'Draw'));
           return (d['winner_code'] === country_code && d['winner_code'] !== 'Draw');
         case 'loss':
           return (d['winner_code'] !== country_code && d['winner_code'] !== 'Draw');
@@ -90,12 +89,12 @@ globals.Router.register('/matches', 'Matches', function (searchParams) {
     markup += (`
         <table class="table table-bordered">
           <thead>
-            <tr>
-              <th>Location</th>
-              <th>Date</th>
-              <th>Teams</th>
-              <th>Goals</th>
-              <th>Winner</th>             
+            <tr class="d-flex">
+              <th class="col-3">Location</th>
+              <th class="col-3">Date</th>
+              <th class="col-3">Teams</th>
+              <th class="col-1">Goals</th>
+              <th class="col-2">Winner</th>             
             </tr>
           </thead>
           <tbody>
@@ -103,12 +102,12 @@ globals.Router.register('/matches', 'Matches', function (searchParams) {
 
     for (const match of data) {
       markup += (`
-          <tr>
-            <td>${match['venue']}, ${match['location']}</td>
-            <td>${globals.formatDate(match['datetime']) || 'Unknown'}</td>
-            <td>${match['home_team_country']} vs ${match['away_team_country']}</td>
-            <td>${match['home_team_statistics']['on_target']} - ${match['away_team_statistics']['on_target']}</td>
-            <td>${match['winner'] || 'Unknown'}</td>
+          <tr class="d-flex">
+            <td class="col-3">${match['venue']}, ${match['location']}</td>
+            <td class="col-3">${globals.functions.formatDate(match['datetime']) || 'Unknown'}</td>
+            <td class="col-3">${match['home_team_country']} vs ${match['away_team_country']}</td>
+            <td class="col-1">${match['home_team_statistics']['on_target']} - ${match['away_team_statistics']['on_target']}</td>
+            <td class="col-2">${match['winner'] || 'Unknown'}</td>
           </tr>
         `);
     }
@@ -136,5 +135,5 @@ globals.Router.register('/matches', 'Matches', function (searchParams) {
     });
   };
 
-  !Boolean(globals.countries) ? globals.getCountries(resolveSearch) : resolveSearch();
+  !Boolean(globals.countries) ? globals.functions.getCountries(resolveSearch) : resolveSearch();
 });

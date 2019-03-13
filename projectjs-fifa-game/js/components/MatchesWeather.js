@@ -5,14 +5,14 @@ globals.Router.register('/matches/weather', 'Matches Weather', function (searchP
     markup += (`
         <table class="table table-bordered">
           <thead>
-            <tr>
-              <th>Location</th>
-              <th>Date</th>
-              <th>Teams</th>          
-              <th>Weather Description</th> 
-              <th>Humidity</th>          
-              <th>Temperature</th>          
-              <th>Wind Speed</th>                             
+            <tr class="d-flex">
+              <th class="col-3">Location</th>
+              <th class="col-2">Date</th>
+              <th class="col-2">Teams</th>          
+              <th class="col-2">Weather Description</th> 
+              <th class="col-1">Humidity</th>          
+              <th class="col-1">Temperature</th>          
+              <th class="col-1">Wind Speed</th>                             
             </tr>
           </thead>
           <tbody>
@@ -20,14 +20,14 @@ globals.Router.register('/matches/weather', 'Matches Weather', function (searchP
 
     for (const match of data) {
       markup += (`
-          <tr>
-            <td>${match['venue']}, ${match['location']}</td>
-            <td>${globals.formatDate(match['datetime']) || 'Unknown'}</td>
-            <td>${match['home_team_country']} vs ${match['away_team_country']}</td>
-            <td>${match['weather']['description']}</td>
-            <td>${match['weather']['humidity']}%</td>
-            <td>${match['weather']['temp_celsius']} °C&nbsp;&nbsp;/&nbsp;&nbsp;${match['weather']['temp_farenheit']} °F</td>
-            <td>${match['weather']['wind_speed']} m/s</td>            
+          <tr class="d-flex">
+            <td class="col-3">${match['venue']}, ${match['location']}</td>
+            <td class="col-2">${globals.functions.formatDate(match['datetime']) || 'Unknown'}</td>
+            <td class="col-2">${match['home_team_country']} vs ${match['away_team_country']}</td>
+            <td class="col-2">${match['weather']['description']}</td>
+            <td class="col-1">${match['weather']['humidity']}%</td>
+            <td class="col-1">${match['weather']['temp_celsius']} °C&nbsp;&nbsp;/&nbsp;&nbsp;${match['weather']['temp_farenheit']} °F</td>
+            <td class="col-1">${match['weather']['wind_speed']} m/s</td>            
           </tr>
         `);
     }

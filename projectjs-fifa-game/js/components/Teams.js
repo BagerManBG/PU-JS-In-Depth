@@ -1,16 +1,14 @@
 globals.Router.register('/teams', 'Teams', function (searchParams) {
-  globals.elements.title.text('Teams');
-
   const build = () => {
     let markup = '';
 
     markup += (`
         <table class="table table-bordered">
           <thead>
-            <tr>
-              <th>Country</th>
-              <th>FIFA Code</th>
-              <th>Group Letter</th>          
+            <tr class="d-flex">
+              <th class="col-4">Country</th>
+              <th class="col-4">FIFA Code</th>
+              <th class="col-4">Group Letter</th>          
             </tr>
           </thead>
           <tbody>
@@ -18,10 +16,10 @@ globals.Router.register('/teams', 'Teams', function (searchParams) {
 
     for (const country_code in globals.countries) {
       markup += (`
-          <tr>
-            <td>${globals.countries[country_code]['country']}</td>
-            <td>${globals.countries[country_code]['fifa_code']}</td>
-            <td>${globals.countries[country_code]['group_letter']}</td>
+          <tr class="d-flex">
+            <td class="col-4">${globals.countries[country_code]['country']}</td>
+            <td class="col-4">${globals.countries[country_code]['fifa_code']}</td>
+            <td class="col-4">${globals.countries[country_code]['group_letter']}</td>
           </tr>
         `);
     }
@@ -36,5 +34,5 @@ globals.Router.register('/teams', 'Teams', function (searchParams) {
     });
   };
 
-  !Boolean(globals.countries) ? globals.getCountries(build) : build();
+  !Boolean(globals.countries) ? globals.functions.getCountries(build) : build();
 });

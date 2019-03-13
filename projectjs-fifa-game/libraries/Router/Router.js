@@ -12,7 +12,8 @@ class Router {
 
   changeRoute(route = this.defaultRoute, path = null) {
     if (this.routes.hasOwnProperty(route)) {
-      window.history.pushState({}, this.routes[route].title, (path || window.location.pathname) + '#' + this.routes[route].path);
+      window.history.pushState({}, this.routes[route].title, (path || '/') + '#' + this.routes[route].path);
+      this.searchParams = new URLSearchParams(window.location.search);
       this.match();
     }
   }
@@ -37,10 +38,15 @@ class Router {
     for (const route_index in this.routes) {
       globals.elements.navigation.append(`
         <li class="nav-item">
-          <a class="nav-link ${this.routes[route_index] === this.currentRoute ? 'active' : ''}" href="#${this.routes[route_index].path}">${this.routes[route_index].title}</a>
+          <a class="nav-link ${this.routes[route_index] === this.currentRoute ? 'active' : ''}" data-route="${route_index}" href="/">${this.routes[route_index].title}</a>
         </li>
       `);
     }
+
+    selectDOM('a.nav-link').on('click', function (e) {
+      e.preventDefault();
+      globals.Router.changeRoute(e.target.getAttribute('data-route'));
+    });
   }
 
   render (render) {
@@ -53,8 +59,15 @@ class Router {
   match () {
     const route = window.location.hash.slice(1);
     if (this.routes.hasOwnProperty(route) && typeof this.routes[route].callback === 'function') {
+      globals.history.push({
+        path: window.location.pathname + window.location.search + window.location.hash,
+        date: new Date().toUTCString(),
+      });
+      globals.Cookie.setCookie(globals.history_cookie_key, JSON.stringify(globals.history));
+
       this.currentRoute = this.routes[route];
       this.routes[route].callback.call(this, this.getQueryParams());
+
       return true;
     }
 

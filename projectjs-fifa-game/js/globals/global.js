@@ -4,6 +4,12 @@ let globals = {
 
   Router: new Router(),
 
+  Cookie: new Cookie(),
+
+  history_cookie_key: 'fifa_history_stack',
+
+  history: [],
+
   elements: {
     title: null,
     navigation: null,
@@ -19,24 +25,26 @@ let globals = {
     matches_country: 'http://worldcup.sfg.io/matches/country',
   },
 
-  formatDate: dateString => {
-    return dateString ? new Date(dateString).toUTCString() : false;
-  },
+  functions: {
+    formatDate: dateString => {
+      return dateString ? new Date(dateString).toUTCString() : false;
+    },
 
-  getCountries: (callback = null) => {
-    globals.MusAJAX.get(globals.endpoints.teams, function (data) {
-      if (data) {
-        const raw = {};
-        for (const index in data) {
-          raw[data[index]['fifa_code']] = data[index];
+    getCountries: (callback = null) => {
+      globals.MusAJAX.get(globals.endpoints.teams, function (data) {
+        if (data) {
+          const raw = {};
+          for (const index in data) {
+            raw[data[index]['fifa_code']] = data[index];
+          }
+
+          globals.countries = {};
+          Object.keys(raw).sort().forEach(function(key) {
+            globals.countries[key] = raw[key];
+          });
         }
-
-        globals.countries = {};
-        Object.keys(raw).sort().forEach(function(key) {
-          globals.countries[key] = raw[key];
-        });
-      }
-      if (typeof callback === 'function') callback(data);
-    })
-  }
+        if (typeof callback === 'function') callback(data);
+      })
+    }
+  },
 };
