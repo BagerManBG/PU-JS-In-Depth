@@ -1,4 +1,6 @@
 window.onload = () => {
+  globals.MusAJAX.clearCache();
+
   globals.elements.title = selectDOM('#title');
   globals.elements.content = selectDOM('#content');
 

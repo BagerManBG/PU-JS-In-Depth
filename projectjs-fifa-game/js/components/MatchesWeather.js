@@ -1,6 +1,4 @@
 globals.Router.register('/matches/weather', 'Matches Weather', function (searchParams) {
-  globals.elements.title.text('Matches Weather');
-
   const build = (data = null) => {
     let markup = '';
 
@@ -39,7 +37,9 @@ globals.Router.register('/matches/weather', 'Matches Weather', function (searchP
         </table>
       `);
 
-    globals.elements.content.html(markup);
+    globals.Router.render ({
+      markup: markup,
+    });
   };
 
   globals.MusAJAX.get(globals.endpoints.matches, build);

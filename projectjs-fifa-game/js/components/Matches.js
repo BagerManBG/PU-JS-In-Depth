@@ -1,6 +1,4 @@
 globals.Router.register('/matches', 'Matches', function (searchParams) {
-  globals.elements.title.text('Matches');
-
   const filterByLocality = function (data, locality, country_code) {
     return data.filter(d => d[locality + '_team']['code'] === country_code);
   };
@@ -120,16 +118,21 @@ globals.Router.register('/matches', 'Matches', function (searchParams) {
         </table>
       `);
 
-    globals.elements.content.html(markup);
+    const addEventSubscribers = function () {
+      selectDOM('#search').on('click', function () {
+        const country = selectDOM('#country-input').get(0).val();
 
-    selectDOM('#search').on('click', function () {
-      const country = selectDOM('#country-input').get(0).val();
-
-      globals.Router.setQueryParams({
-        country: country,
-        locality: country === 'all' ? 'all' : selectDOM('#locality-input').get(0).val(),
-        outcome: country === 'all' ? 'all' : selectDOM('#outcome-input').get(0).val(),
+        globals.Router.setQueryParams({
+          country: country,
+          locality: country === 'all' ? 'all' : selectDOM('#locality-input').get(0).val(),
+          outcome: country === 'all' ? 'all' : selectDOM('#outcome-input').get(0).val(),
+        });
       });
+    };
+
+    globals.Router.render({
+      markup: markup,
+      callback: addEventSubscribers,
     });
   };
 

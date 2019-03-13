@@ -1,6 +1,4 @@
-globals.Router.register('/group-results', 'Group Results', function (searchParams) {
-  globals.elements.title.text('Group Results');
-
+globals.Router.register('/teams/group-results', 'Group Results', function (searchParams) {
   const build = (data = null) => {
     let markup = '';
 
@@ -49,7 +47,9 @@ globals.Router.register('/group-results', 'Group Results', function (searchParam
         </table>
       `);
 
-    globals.elements.content.html(markup);
+    globals.Router.render ({
+      markup: markup,
+    });
   };
 
   globals.MusAJAX.get(globals.endpoints.teams_group_results, build);

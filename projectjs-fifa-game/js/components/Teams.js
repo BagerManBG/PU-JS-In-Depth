@@ -31,7 +31,9 @@ globals.Router.register('/teams', 'Teams', function (searchParams) {
         </table>
       `);
 
-    globals.elements.content.html(markup);
+    globals.Router.render ({
+      markup: markup,
+    });
   };
 
   !Boolean(globals.countries) ? globals.getCountries(build) : build();
