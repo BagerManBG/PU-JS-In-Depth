@@ -31,8 +31,21 @@ class Router {
     return false;
   }
 
+  renderNavigation () {
+    globals.elements.navigation.html('');
+
+    for (const route_index in this.routes) {
+      globals.elements.navigation.append(`
+        <li class="nav-item">
+          <a class="nav-link ${this.routes[route_index] === this.currentRoute ? 'active' : ''}" href="#${this.routes[route_index].path}">${this.routes[route_index].title}</a>
+        </li>
+      `);
+    }
+  }
+
   render (render) {
     globals.elements.title.text(this.currentRoute.title);
+    this.renderNavigation();
     globals.elements.content.html(render.markup);
     if (render.callback && typeof render.callback === 'function') render.callback();
   }

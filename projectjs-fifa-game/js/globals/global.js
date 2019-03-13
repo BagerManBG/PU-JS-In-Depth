@@ -6,6 +6,7 @@ let globals = {
 
   elements: {
     title: null,
+    navigation: null,
     content: null,
   },
 
