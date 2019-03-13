@@ -8,6 +8,8 @@
     * Task - http://js.mihail-petrov.me/projects/project_2.pdf
 1. __projectjs-board-game__
     * Task - http://js.mihail-petrov.me/projects/project_3.pdf
+1. __projectjs-fifa-game__
+    * Task - http://js.mihail-petrov.me/projects/project_4.pdf
 
 ## Running the Projects
 
@@ -71,3 +73,24 @@ of speed and code optimization. It is easier to maintain many different canvases
 option to use z-index in a canvas. The four canvases are: field (contains the board), player field (contains the borders
 of the players' tiles), selections (visualizes the possible tiles when performing an action) and entities (displays the
 different entities that are on the board).
+
+## Information for Task #4 (_projectjs-fifa-game_)
+
+The website is initialized from the _app.js_ file. Several custom libraries are used for easier implementation of task
+and for scalability. The __Cookie__ library is used to manage browser cookies. They are used when saving the history of
+the user's actions in a chronological order. The __jsDOM__ library is used for DOM manipulation (jQuery imitator).
+MusAJAX is the custom library responsible for all the AJAX requests used in the app. It also stores the result of those
+requests for a faster loading once they've been loaded once. The __Router__ library is used for registering routes
+through components and for rendering the pages. Bootstrap 4 CSS is heavily used on all pages. If no proper path has been
+selected, the site will redirect to the default one.
+
+__Matches__ is the default route for the site. There you can see brief info about all matches and you have the ability to
+filter the displayed data. Country field is used to display only matches where the selected country is a participant.
+The other two options are only available for use after you have selected a country. Otherwise they will default to "all".
+Locality is used to specify weather to see data where the selected country is the home or away team. Outcome is used to
+specify weather to get only wins, losses or draws for selected country. Search uses query parameters.
+
+__Teams__, __Matches Weather__ and __Group Results__ are components, which display data from a different category.
+
+__History__ is where all the history stored in the browser cookie is displayed. History can be deleted with the button
+at the top.
